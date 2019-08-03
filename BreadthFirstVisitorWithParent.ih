@@ -1,0 +1,305 @@
+/**
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ **/
+
+/**
+ * @file BreadthFirstVisitorWithParent.ih
+ * @author Jacques-Olivier Lachaud (\c jacques-olivier.lachaud@univ-savoie.fr )
+ * Laboratory of Mathematics (CNRS, UMR 5807), University of Savoie, France
+ *
+ * @date 2011/11/15
+ *
+ * Implementation of inline methods defined in BreadthFirstVisitorWithParent.h
+ *
+ * This file is part of the DGtal library.
+ */
+
+
+//////////////////////////////////////////////////////////////////////////////
+#include <cstdlib>
+//////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// IMPLEMENTATION of inline methods.
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// ----------------------- Standard services ------------------------------
+
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+DGtal::BreadthFirstVisitorWithParent<TSpace>::~BreadthFirstVisitorWithParent()
+{
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+DGtal::BreadthFirstVisitorWithParent<TSpace>
+::BreadthFirstVisitorWithParent( const BreadthFirstVisitorWithParent & other )
+  : myDomain( other.myDomain ), 
+    myMarkedVertices( other.myMarkedVertices ),
+    myFatherImage( other.myFatherImage ),
+    myQueue( other.myQueue )
+{
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+DGtal::BreadthFirstVisitorWithParent<TSpace>
+::BreadthFirstVisitorWithParent( Domain aDomain )
+  : myDomain( aDomain ), myMarkedVertices( myDomain ),
+    myFatherImage( aDomain )
+{
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+DGtal::BreadthFirstVisitorWithParent<TSpace>
+::BreadthFirstVisitorWithParent( Domain aDomain, const Vertex & p )
+  : myDomain( aDomain ), myMarkedVertices( myDomain ),
+    myFatherImage( aDomain )
+{
+  myMarkedVertices.setValue( p, true );
+  myFatherImage.setValue( p, p );
+  myQueue.push( std::make_pair( p, 0 ) );
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+template <typename Image, typename VertexPredicate>
+inline
+DGtal::BreadthFirstVisitorWithParent<TSpace>
+::BreadthFirstVisitorWithParent( const Image& image,
+				 const VertexPredicate& vPred )
+  : myDomain( image.domain() ), myMarkedVertices( myDomain ),
+    myFatherImage( myDomain )
+{
+  for ( auto p : myDomain )
+    {
+      bool in_core = vPred( image( p ) );
+      myMarkedVertices.setValue( p, in_core );
+      if ( in_core ) {
+	myFatherImage.setValue( p, p );
+	myQueue.push( std::make_pair( p, 0 ) );
+      }
+    }
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+template < typename PointPredicate >
+inline
+DGtal::BreadthFirstVisitorWithParent<TSpace>
+::BreadthFirstVisitorWithParent( Domain aDomain,
+				 const PointPredicate& pPred )
+  : myDomain( aDomain ), myMarkedVertices( myDomain ),
+    myFatherImage( myDomain )
+{
+  for ( auto p : myDomain )
+    {
+      bool in_core = pPred( p );
+      myMarkedVertices.setValue( p, in_core );
+      if ( in_core ) {
+	myFatherImage.setValue( p, p );
+	myQueue.push( std::make_pair( p, 0 ) );
+      }
+    }
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+const typename DGtal::BreadthFirstVisitorWithParent<TSpace>::Domain & 
+DGtal::BreadthFirstVisitorWithParent<TSpace>::domain() const
+{
+  return myDomain;
+}
+
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+typename DGtal::BreadthFirstVisitorWithParent<TSpace>::Vertex
+DGtal::BreadthFirstVisitorWithParent<TSpace>::father( const Vertex& v ) const
+{
+  return myFatherImage( v );
+}
+
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+typename DGtal::BreadthFirstVisitorWithParent<TSpace>::Vertex
+DGtal::BreadthFirstVisitorWithParent<TSpace>::root( const Vertex& v )
+{
+  if ( myFatherImage( v ) != v )
+    myFatherImage.setValue( v, root( myFatherImage( v ) ) );
+  return myFatherImage( v );
+}
+
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+void
+DGtal::BreadthFirstVisitorWithParent<TSpace>::computeRoots()
+{
+  for ( auto p : myDomain ) root( p );
+}
+
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+bool
+DGtal::BreadthFirstVisitorWithParent<TSpace>::finished() const
+{
+  return myQueue.empty();
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+const typename DGtal::BreadthFirstVisitorWithParent<TSpace>::Node & 
+DGtal::BreadthFirstVisitorWithParent<TSpace>::current() const
+{
+  ASSERT( ! finished() );
+  return myQueue.front();
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+void
+DGtal::BreadthFirstVisitorWithParent<TSpace>::ignore()
+{
+  ASSERT( ! finished() );
+  myQueue.pop();
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+void
+DGtal::BreadthFirstVisitorWithParent<TSpace>::expand()
+{
+  ASSERT( ! finished() );
+  Node node = myQueue.front();
+  Data    d = node.second + 1; 
+  Point   p = node.first;
+  myQueue.pop();
+  std::vector<Point> neighbors;
+  if ( p[ 0 ] < myDomain.upperBound()[ 0 ] )
+    neighbors.push_back( p + Point( 1, 0 ) );
+  if ( p[ 0 ] > myDomain.lowerBound()[ 0 ] )
+    neighbors.push_back( p - Point( 1, 0 ) );
+  if ( p[ 1 ] < myDomain.upperBound()[ 1 ] )
+    neighbors.push_back( p + Point( 0, 1 ) );
+  if ( p[ 1 ] > myDomain.lowerBound()[ 1 ] )
+    neighbors.push_back( p - Point( 0, 1 ) );
+  for ( auto q : neighbors ) {
+    bool mark_it = myMarkedVertices( q );
+    if ( ! mark_it ) {
+      myMarkedVertices.setValue( q, true );
+      myFatherImage.setValue( q, p );
+      myQueue.push( std::make_pair( q, d ) );
+    }
+  }
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+template <typename VertexPredicate>
+inline
+void
+DGtal::BreadthFirstVisitorWithParent<TSpace>::expand
+( const VertexPredicate & authorized_vtx )
+{
+  ASSERT( ! finished() );
+  Node node = myQueue.front();
+  Data    d = node.second + 1; 
+  Point   p = node.first;
+  myQueue.pop();
+  std::vector<Point> neighbors;
+  if ( p[ 0 ] < myDomain.upperBound()[ 0 ] )
+    neighbors.push_back( p + Point( 1, 0 ) );
+  if ( p[ 0 ] > myDomain.lowerBound()[ 0 ] )
+    neighbors.push_back( p - Point( 1, 0 ) );
+  if ( p[ 1 ] < myDomain.upperBound()[ 1 ] )
+    neighbors.push_back( p + Point( 0, 1 ) );
+  if ( p[ 1 ] > myDomain.lowerBound()[ 1 ] )
+    neighbors.push_back( p - Point( 0, 1 ) );
+  for ( auto q : neighbors ) {
+    if ( ! authorized_vtx( q ) ) continue;
+    bool mark_it = myMarkedVertices( q );
+    if ( ! mark_it ) {
+      myMarkedVertices.setValue( q, true );
+      myFatherImage.setValue( q, p );
+      myQueue.push( std::make_pair( q, d ) );
+    }
+  }
+}
+//-----------------------------------------------------------------------------
+template < typename TSpace >
+inline
+void
+DGtal::BreadthFirstVisitorWithParent<TSpace>::terminate()
+{
+  while ( ! finished() )
+    {
+      Node node = myQueue.front();
+      myQueue.pop();
+      myMarkedVertices.setValue( node.first, false );
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Interface - public :
+
+/**
+ * Writes/Displays the object on an output stream.
+ * @param out the output stream where the object is written.
+ */
+template < typename TSpace >
+inline
+void
+DGtal::BreadthFirstVisitorWithParent<TSpace>::selfDisplay ( std::ostream & out ) const
+{
+  out << "[BreadthFirstVisitorWithParent"
+      << " #queue=" << myQueue.size()
+      << " ]";
+}
+
+/**
+ * Checks the validity/consistency of the object.
+ * @return 'true' if the object is valid, 'false' otherwise.
+ */
+template < typename TSpace >
+inline
+bool
+DGtal::BreadthFirstVisitorWithParent<TSpace>::isValid() const
+{
+  return true;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Implementation of inline functions                                        //
+
+template < typename TSpace >
+inline
+std::ostream&
+DGtal::operator<< ( std::ostream & out, 
+                    const BreadthFirstVisitorWithParent<TSpace> & object )
+{
+  object.selfDisplay( out );
+  return out;
+}
+
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+
