@@ -88,7 +88,7 @@ if ( Boost_FOUND )
   include_directories( ${Boost_INCLUDE_DIRS} )
   SET(GTVDep ${GTVDep} 
      ${Boost_LIBRAIRIES}  
-     ${Boost_PROGRAM_OPTIONS_LIBRARY})
+     ${Boost_PROGRAM_OPTIONS_LIBRARY} Boost::program_options)
    SET(GTVLinInc ${Boost_INCLUDE_DIRS})
 endif( Boost_FOUND )
 
