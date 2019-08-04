@@ -23,9 +23,9 @@
 #include <DGtal/io/writers/GenericWriter.h>
 #include <DGtal/math/linalg/SimpleMatrix.h>
 #include <DGtal/geometry/helpers/ContourHelper.h>
-
-#include "FourierPoisson.h"
-
+// #include <DGtal/geometry/volumes/distance/ExactPredicateLpSeparableMetric.h>
+// #include <DGtal/geometry/volumes/distance/VoronoiMap.h>
+// #include <DGtal/geometry/volumes/distance/DistanceTransformation.h>
 #include "CairoViewer.h"
 #include "BasicVectoImageExporter.h"
 #include "ImageConnecter.h"
@@ -34,6 +34,12 @@
 #include "BezierCurve.h"
 #include "BreadthFirstVisitorWithParent.h"
 //#include "ImageTriangulation.h"
+#include "FourierPoisson.h"
+
+// #include <CGAL/Delaunay_triangulation_2.h>
+// #include <CGAL/Constrained_Delaunay_triangulation_2.h>
+// #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+// #include <CGAL/Triangulation_2.h>
 
 #include "cairo.h"
 
@@ -712,6 +718,41 @@ namespace DGtal {
       }
     }
 
+    // template <typename Image>
+    // void outputPoissonImage( Image& image,
+    //     		     const image::Zoom& Z )
+    // {
+    //   typedef ImageContainerBySTLVector< Domain, Scalar > ScalarImage;
+    //   const Dimension max_d = _color ? 3 : 1;
+    //   image = Image( Z.zoomedDomain() );
+    //   std::vector< ScalarImage*> Id( max_d );
+    //   for ( Dimension d = 0; d < max_d; ++d )
+    //     {
+    //       Id[ d ] = new ScalarImage( Z.zoomedDomain() );
+    //       ScalarImage Gxd( Z.zoomedDomain() );
+    //       ScalarImage Gyd( Z.zoomedDomain() );
+    //       fillZoomedImage( *( Id[ d ] ), Z, d );
+    //       fillZoomedGradient( Gxd, Gyd, Z, d );
+    //       if ( d == 0 ) {
+    //         image::functions::exportGradPGM( "gradx.pgm", Gxd );
+    //         image::functions::exportGradPGM( "grady.pgm", Gyd );
+    //       }
+    //       image::functions::poisson( *( Id[ d ] ), Gxd, Gyd );
+    //     }
+    //   if ( _color )
+    //     for ( auto&& p : image.domain() ) {
+    //       Color col( (unsigned char) round( (*Id[ 0 ])( p ) ),
+    //     	     (unsigned char) round( (*Id[ 1 ])( p ) ),
+    //     	     (unsigned char) round( (*Id[ 2 ])( p ) ) );
+    //       image.setValue( p, col );
+    //     }
+    //   else
+    //     for ( auto&& p : image.domain() ) {
+    //       image.setValue( p, (unsigned char) round( (*Id[ 0 ])( p ) ) );
+    //     }
+    //   for ( Dimension d = 0; d < max_d; ++d )
+    //     delete Id[ d ];
+    // }
     
     // -------------- Construction services -------------------------
 
@@ -3087,6 +3128,7 @@ int main( int argc, char** argv )
     ("tv-max-iter,N", po::value<int>()->default_value( 20 ), "The maximum number of iteration in TV's algorithm." )
     ("nb-alt-iter,A", po::value<int>()->default_value( 1 ), "The number of iteration for alternating TV and TV-flip." )
     ("display-tv,d", po::value<int>()->default_value( 0 ), "Tells the display mode after standard TV regularization per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles." )
+    ("display-flip,D", po::value<int>()->default_value( 4 ), "Tells the display mode aftergeometric TV flips per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles (quite nice and flat), 0x8: output partition of unity Bezier triangles (slow and not good), 0x10: output 2nd order reconstruction with Bezier curve (nicest but slower than 0x4), 0x20: same as 0x8 but displays also the similarity/discontinuity graph (for debug/illustrations), 0x40: use Poisson reconstruction to reconstruct linear gradient with discontinuities." )
     ("discontinuities,S", po::value<double>()->default_value( 0.1 ), "Tells to display a % of the TV discontinuities (the triangles with greatest energy)." ) 
     ("stiffness", po::value<double>()->default_value( 0.9 ), "Tells how to stiff the gradient around discontinuities (amplitude value is changed at stiffness * middle)." ) 
     ("amplitude", po::value<double>()->default_value( 1.0 ), "Tells the amplitude of the stiffness for the gradient around discontinuities." )
@@ -3286,6 +3328,39 @@ int main( int argc, char** argv )
     TVT.regularizeContours( 0.001, N );
   }
   trace.endBlock();
+
+  trace.beginBlock("Displaying triangulation");
+  {
+    int  display = vm[ "display-flip" ].as<int>();
+    double     b = vm[ "bitmap" ].as<double>();
+    double  disc = vm[ "discontinuities" ].as<double>();
+    double    st = vm[ "stiffness" ].as<double>();
+    double    am = vm[ "amplitude" ].as<double>();
+    double    x0 = 0.0;
+    double    y0 = 0.0;
+    double    x1 = (double) image.domain().upperBound()[ 0 ];
+    double    y1 = (double) image.domain().upperBound()[ 1 ];
+    std::string bname = vm[ "output" ].as<std::string>();
+    
+    viewTVTriangulationAll( TVT, b, x0, y0, x1, y1, color, bname,
+        		    display, disc, st, am );
+    // if ( ( display & 64 ) == 64 ) {
+    //   typedef ImageContainerBySTLVector< Domain, Color > ColorImage;
+    //   typedef ColorImage::Point Point;
+    //   typedef ColorImage::Domain Domain;
+    //   ColorImage poisson_image( Domain( Point::zero, Point::zero ) );
+    //   image::Zoom Z( image.domain(), (int) round( b ) );
+    //   TVT.outputPoissonImage( poisson_image, Z );
+    //   struct IdFunctor {
+    //     typedef Color Argument;
+    //     typedef Color Value;
+    //     Value operator()( Argument c ) const { return c; }
+    //   };
+    //   std::string fpoisson = bname + "-poisson.ppm";
+    //   PPMWriter< ColorImage, IdFunctor >::exportPPM( fpoisson, poisson_image );
+    // }
+  }
+  trace.endBlock();
   
   std::string z_method = vm[ "zip-method" ].as<std::string>();
   if ( z_method == "Merge" ) {
@@ -3332,7 +3407,61 @@ int main( int argc, char** argv )
       //      exportEPSMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
     }
   trace.endBlock();
-  }
+  }//  else if ( z_method == "Laplacian" ) {
+  //   trace.beginBlock("Compressing triangulation");
+  //   {
+  //     Image L( image.domain() );
+  //     TVT.outputLaplacian( L, 1.0 );
+  //     PGMWriter<Image,UnsignedInt2GrayLevel>::exportPGM( "output-laplacian-after.pgm", L );
+  //     double zip = vm[ "zip" ].as<double>();
+  //     if ( zip < 1.0 ) {
+  //       ImageTriangulation< Z2i::Space, 3 > IT;
+  //       TVTriangulation::ScalarForm lp( TVT.T.nbVertices() );
+  //       TVTriangulation::VertexIndex v = 0;
+  //       for ( auto val : L ) lp[ v++ ] = val;
+  //       IT.init( image.domain(), TVT._I, lp, zip );
+  //       TVTriangulation TVTzip( IT._domain, IT._I, IT._T,
+  //       			color, p );
+  //       trace.info() << TVTzip.T << std::endl;
+	
+  //       trace.info() << "------------- optimize geometry --------------" << std::endl;
+  //       trace.info() << "TV( u ) = " << TVTzip.getEnergyTV() << std::endl;
+  //       int iter = 0;
+  //       int last = 1;
+  //       int miter = vm[ "limit" ].as<int>();
+  //       //int miter = vm[ "nb-zip-geometry" ].as<int>();
+  //       while ( true ) {
+  //         if ( iter++ >= miter ) break;
+  //         double energy = 0.0;
+  //         nbs = TVTzip.onePass( energy, strat );
+  //         if ( ( last == 0 ) && ( nbs.first == 0 ) ) break;
+  //         last = nbs.first;
+  //       }
+	
+  //       int  display = vm[ "display-flip" ].as<int>();
+  //       double     b = vm[ "bitmap" ].as<double>();
+  //       double  disc = vm[ "discontinuities" ].as<double>();
+  //       double    st = vm[ "stiffness" ].as<double>();
+  //       double    am = vm[ "amplitude" ].as<double>();
+  //       double    x0 = 0.0;
+  //       double    y0 = 0.0;
+  //       double    x1 = (double) image.domain().upperBound()[ 0 ];
+  //       double    y1 = (double) image.domain().upperBound()[ 1 ];
+  //       std::string bname = "zip";
+  //       viewTVTriangulationAll( TVTzip, b, x0, y0, x1, y1, color, bname,
+  //       			display, disc, st, am );
+  //       unsigned int w = image.extent()[ 0 ];
+  //       unsigned int h = image.extent()[ 1 ];
+  //       std::string pname = "zip-primal.eps";
+  //       // std::string dname = "zip-dual.eps";
+  //       double epsScale = vm["epsScale"].as<double>();
+  //       exportEPSMesh(TVTzip, pname, w, h , true, epsScale);
+  //       //      exportEPSMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
+  //     }
+  //   }
+  //   trace.endBlock();
+  // }
+
   
   trace.beginBlock("Export base triangulation");
 
