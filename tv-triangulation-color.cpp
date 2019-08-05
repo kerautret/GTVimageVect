@@ -23,9 +23,7 @@
 #include <DGtal/io/writers/GenericWriter.h>
 #include <DGtal/math/linalg/SimpleMatrix.h>
 #include <DGtal/geometry/helpers/ContourHelper.h>
-// #include <DGtal/geometry/volumes/distance/ExactPredicateLpSeparableMetric.h>
-// #include <DGtal/geometry/volumes/distance/VoronoiMap.h>
-// #include <DGtal/geometry/volumes/distance/DistanceTransformation.h>
+
 #include "CairoViewer.h"
 #include "BasicVectoImageExporter.h"
 #include "ImageConnecter.h"
@@ -33,19 +31,12 @@
 #include "LeastSquares.h"
 #include "BezierCurve.h"
 #include "BreadthFirstVisitorWithParent.h"
-//#include "ImageTriangulation.h"
+
+
 #include "FourierPoisson.h"
-
-// #include <CGAL/Delaunay_triangulation_2.h>
-// #include <CGAL/Constrained_Delaunay_triangulation_2.h>
-// #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-// #include <CGAL/Triangulation_2.h>
-
 #include "cairo.h"
 
-// #include "Triangulation2DHelper.h"
-// #include "UmbrellaPart2D.h"
-// #include "Auxiliary.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 double randomUniform()
 {
