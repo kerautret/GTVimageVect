@@ -3507,7 +3507,7 @@ int main( int argc, char** argv )
             << "Export vectorial representation:" << timeExport << std::endl
             << "----------------------\n"
             << "Total time: " <<   timeTV +  timeTriangulation +  timeDisplayTriangulation + 
-                                  timeOptimisationTr +  timeRegulContours +  timeExport
+                                   timeOptimisationTr +  timeRegulContours +  timeExport << std::endl
             << "----------------------\n";
   
 
