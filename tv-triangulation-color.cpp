@@ -23,6 +23,7 @@
 #include <DGtal/io/writers/GenericWriter.h>
 #include <DGtal/math/linalg/SimpleMatrix.h>
 #include <DGtal/geometry/helpers/ContourHelper.h>
+#include <DGtal/base/Clock.h>
 
 #include "CairoViewer.h"
 #include "BasicVectoImageExporter.h"
@@ -3101,7 +3102,7 @@ namespace po = boost::program_options;
 int main( int argc, char** argv )
 {
   using namespace DGtal;
-
+  
   // parse command line ----------------------------------------------
   po::options_description general_opt("Allowed options are: ");
   general_opt.add_options()
@@ -3137,7 +3138,7 @@ int main( int argc, char** argv )
     ("zip-method,Z", po::value<std::string>()->default_value( "Laplacian" ), "zip method in Laplacian | Merge." )
     // ("nb-zip-geometry,Z", po::value<int>()->default_value( 100 ), "Maximum number of iterations to optimize the TV geometry of the zipped triangulation." )
     ;
-
+  
   bool parseOK = true;
   po::variables_map vm;
   try {
@@ -3165,7 +3166,7 @@ int main( int argc, char** argv )
   typedef Z2i::Domain Domain;
   typedef ImageSelector < Z2i::Domain, unsigned int>::Type Image;
   typedef ImageSelector < Z2i::Domain, Color>::Type ColorImage;
-  
+  Clock c;
   trace.beginBlock("Loading image");
   std::string img_fname = vm[ "input" ].as<std::string>();
   Image image           = GenericReader<Image>::import( img_fname ); 
@@ -3178,13 +3179,16 @@ int main( int argc, char** argv )
 	       << " color=" << ( color ? "True" : "False" ) << std::endl;
   trace.info() << std::fixed;
   trace.endBlock();
-
+  
   double lambda = vm[ "lambda" ].as<double>();
   double      dt = vm[ "dt" ].as<double>();
   double     tol = vm[ "tolerance" ].as<double>();
   int          N = vm[ "tv-max-iter" ].as<int>();
   int      quant = vm[ "quantify" ].as<int>();
   //  if ( lambda > 0.0 ) {
+  double timeTV, timeTriangulation, timeDisplayTriangulation,
+    timeOptimisationTr, timeRegulContours, timeExport = 0.0;
+  c.startClock();
   if ( false ) {
     trace.beginBlock("Image usual TV regularization");
     bool out_color = color;
@@ -3222,6 +3226,8 @@ int main( int argc, char** argv )
     }
     trace.endBlock();
   }
+  timeTV = c.stopClock();
+  c.startClock();
   trace.beginBlock("Construction of the triangulation");
   double    p = vm[ "tv-power" ].as<double>();
   double  sim = vm[ "similarity" ].as<double>();
@@ -3245,7 +3251,8 @@ int main( int argc, char** argv )
   };
   PPMWriter<Image, UnsignedInt2Color>::exportPPM( "output-tv.ppm", J );
   trace.endBlock();
-
+  timeTriangulation = c.stopClock();
+  c.startClock();
   trace.beginBlock("Displaying triangulation");
   {
     int  display = vm[ "display-tv" ].as<int>();
@@ -3261,7 +3268,8 @@ int main( int argc, char** argv )
 			    display, disc, st, am );
   }
   trace.endBlock();
-  
+  timeDisplayTriangulation = c.stopClock();
+  c.startClock();
   trace.beginBlock("Optimizing the triangulation");
   int miter = vm[ "limit" ].as<int>();
   int strat = vm[ "strategy" ].as<int>();
@@ -3312,14 +3320,18 @@ int main( int argc, char** argv )
     last_energy = TVT.getEnergyTV();
   }
   trace.endBlock();
-
+  timeOptimisationTr = c.stopClock();
+  c.startClock();
+  
   trace.beginBlock("regularizing contours");
   {
     int         N = vm[ "regularizeContour" ].as<int>();
     TVT.regularizeContours( 0.001, N );
   }
   trace.endBlock();
-
+  timeRegulContours = c.stopClock();
+  c.startClock();
+  
   trace.beginBlock("Displaying triangulation");
   {
     int  display = vm[ "display-flip" ].as<int>();
@@ -3352,7 +3364,7 @@ int main( int argc, char** argv )
     // }
   }
   trace.endBlock();
-  
+  timeDisplayTriangulation = c.stopClock();
   std::string z_method = vm[ "zip-method" ].as<std::string>();
   if ( z_method == "Merge" ) {
     trace.beginBlock("Compressing triangulation");
@@ -3453,6 +3465,7 @@ int main( int argc, char** argv )
   //   trace.endBlock();
   // }
 
+  c.startClock();
   
   trace.beginBlock("Export base triangulation");
 
@@ -3482,7 +3495,23 @@ int main( int argc, char** argv )
     exportEPSContoursDual(TVT, name, w, h, epsScale);
   }
   trace.endBlock();
+  timeExport = c.stopClock();
+  std::cout << "----------------------\n";
+  std::cout << "Time measure: (ms) \n"
+            << "----------------------\n"
+            << "TV:" << timeTV<< std::endl
+            << "Triangulation:" <<  timeTriangulation<< std::endl
+            << "Triangulation display:" <<  timeDisplayTriangulation<< std::endl
+            << "Optimisation triangulation:" << timeOptimisationTr<< std::endl
+            << "Contour regularisation: " << timeRegulContours << std::endl
+            << "Export vectorial representation:" << timeExport << std::endl
+            << "----------------------\n"
+            << "Total time: " <<   timeTV +  timeTriangulation +  timeDisplayTriangulation + 
+                                  timeOptimisationTr +  timeRegulContours +  timeExport
+            << "----------------------\n";
+  
 
+  
   
   // trace.beginBlock("Merging triangles");
   // {
