@@ -50,7 +50,7 @@ before_build:
   - msbuild zlib.sln /m
   - cmd: msbuild INSTALL.vcxproj
   - cmd: cd
-  - cmd; cd  Appveyor
+  - cmd: cd  Appveyor
   - cmd: ./build-cairo-windows.sh
   - git clone -q --branch=master https://github.com/DGtal-team/DGtal.git C:\projects\dgtal
   - cd C:\projects\dgtal
