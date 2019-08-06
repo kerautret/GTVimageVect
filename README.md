@@ -3,6 +3,7 @@ Source code of "Geometric Total Variation for Image Vectorization, Zooming and P
 
 Build status:
  - Linux/MacOS [![Build Status](https://travis-ci.org/kerautret/GTVimageVect.svg?branch=master)](https://travis-ci.org/kerautret/GTVimageVect)
+ - Windows [![Build status](https://ci.appveyor.com/api/projects/status/i1crefqj9j1e3lw2?svg=true)](https://ci.appveyor.com/project/kerautret/gtvimagevect)
 
 ## Installation
 
