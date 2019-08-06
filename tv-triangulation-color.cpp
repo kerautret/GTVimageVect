@@ -1,5 +1,6 @@
 #include <cfloat>
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <boost/program_options/options_description.hpp>
