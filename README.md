@@ -1,7 +1,8 @@
 # GTVimageVect
 Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing"
 
-
+Build status:
+ - Linux/MacOS [![Build Status](https://travis-ci.org/kerautret/GTVimageVect.svg?branch=master)](https://travis-ci.org/kerautret/GTVimageVect)
 
 ## Installation
 
