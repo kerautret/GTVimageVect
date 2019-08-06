@@ -26,6 +26,7 @@ The installation of the code is then easy:
    - From the git command:
      - `git clone git@github.com:kerautret/GTVimageVect.git`
      - `cd GTVimageVect; mkdir build; cd build;`
+
      Then you start to build the code: (you can remove the DGtal path if you make a global installation of DGtal.
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build"`
      - `make`
