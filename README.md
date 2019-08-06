@@ -1,5 +1,5 @@
 # GTVimageVect
-Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing" Authored by  Bertrand Kerautret and Jacques-Oliver Lachaud (2019)
+Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing" authored by  Bertrand Kerautret and Jacques-Oliver Lachaud (2019)
 
 You can also access to [IPOL](http://www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000076)
 
@@ -52,7 +52,7 @@ The installation of the code is then:
 
 
 ## Reproduction of Paper Figures
-All the figures of the paper can be reproduced from the following script `script-figures.sh`.
+All the figures of the paper using the present algorihtms can be reproduced from the following script `script-figures.sh`.
 You just have to run by specifying the Input/Output directory:
 
 `
