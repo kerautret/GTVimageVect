@@ -28,6 +28,6 @@ The installation of the code is then easy:
      - `cd GTVimageVect; mkdir build; cd build;`
 
      Then you start to build the code: (you can remove the DGtal path if you make a global installation of DGtal.
-     - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string=\"Release\"`
+     - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
      
