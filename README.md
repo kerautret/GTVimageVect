@@ -13,16 +13,16 @@ To use this source code, you need to install the following dependencies:
      - `git clone git@github.com:DGtal-team/DGtal.git`
      - `cd DGtal; mkdir build; cd build`
      - `cmake .. -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE:string="Release";`
-     - `make;`
-     - Not mandatory `make install`.
-     - For any problem, don't hesitate to contact the DGtal team on the [GitHub repository](https://github.com/DGtal-team/DGtal)
+     - `make;` eventually:  `make install`.
+
+     For any problem, don't hesitate to contact the DGtal team on the [GitHub repository](https://github.com/DGtal-team/DGtal).
      On windows or more details see instructions [here](https://dgtal-team.github.io/doc-nightly/moduleBuildDGtal.html).
    - **cairo**
       The installation details (Linux/MacOS/Windows) are on the website: https://www.cairographics.org/download/
    - **boost programm options** by default the application use the package `libboost-program-options-dev`. You can use you default package manager to install it.
 
 
-The installation of the code is then easy:
+The installation of the code is then:
    - From the git command:
      - `git clone git@github.com:kerautret/GTVimageVect.git`
      - `cd GTVimageVect; mkdir build; cd build;`
@@ -31,3 +31,10 @@ The installation of the code is then easy:
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
      
+## Typical Use
+
+
+
+
+## Reproduction of Paper Figures
+

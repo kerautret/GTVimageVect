@@ -1,0 +1,51 @@
+language: cpp
+dist: trusty
+sudo: false
+os:
+- linux
+- osx
+compiler:
+- gcc
+- clang
+cache: apt
+env:
+matrix:
+  - CONFIG="Debug"
+  - CONFIG="Release"
+
+
+matrix:
+  fast_finish: true
+
+addons:
+  apt:
+    sources:
+    - deadsnakes
+    - ubuntu-toolchain-r-test
+    packages:
+    - libcairo2-dev
+    - ninja-build
+    - g++-4.8
+    - gcc-4.8
+    - libboost-dev
+    - libboost-program-options-dev
+    - libboost-system-dev
+before_install:
+- env
+- export SRC_DIR="`pwd`"
+
+before_script:
+- if [ $TRAVIS_OS_NAME == linux ]; then echo "All done.";   fi
+- if [ $TRAVIS_OS_NAME == osx ]; then source .travis/install_deps_macos.sh; fi
+- DGTALTYPE="-DBUILD_EXAMPLES=OFF -DDGTAL_BUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=$CONFIG  -DWITH_QGLVIEWER=false -DWITH_ITK=false"
+- cd $SRC_DIR
+- git clone --depth=1 git://github.com/DGtal-team/DGtal.git
+- cd DGtal
+- cmake . $DGTALTYPE -DCMAKE_CXX_COMPILER=$CXXCOMPILER -DCMAKE_C_COMPILER=$CCOMPILER
+- make
+- cd ..
+
+script:
+- echo "---- $DGTALTYPE ---$BUILD_DOC---$UPLOAD_DOC--*$DOC*-$BTYPE---"
+- cmake . -DDGtal_DIR=$PWD/DGtal $BTYPE   -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=$CXXCOMPILER  -DCMAKE_C_COMPILER=$CCOMPILER
+- make
