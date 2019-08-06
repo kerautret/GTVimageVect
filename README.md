@@ -55,8 +55,8 @@ The installation of the code is then:
 All the figures of the paper using the present algorihtms can be reproduced from the following script `script-figures.sh`.
 You just have to run by specifying the Input/Output directory:
 
-`
- script-figures.sh Input Output
-`
+ `mkidr Output`
+ 
+ `script-figures.sh Input Output`
 
 
