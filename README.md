@@ -1,7 +1,7 @@
 # GTVimageVect
 Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing" Authored by  Bertrand Kerautret and Jacques-Oliver Lachaud
 
-You can also access to [IPOL](www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000076)
+You can also access to [IPOL](http://www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000076)
 
 Build status:
  - Linux/MacOS [![Build Status](https://travis-ci.org/kerautret/GTVimageVect.svg?branch=master)](https://travis-ci.org/kerautret/GTVimageVect)
@@ -22,7 +22,8 @@ To use this source code, you need to install the following dependencies:
      For any problem, don't hesitate to contact the DGtal team on the [GitHub repository](https://github.com/DGtal-team/DGtal).
      On windows or more details see instructions [here](https://dgtal-team.github.io/doc-nightly/moduleBuildDGtal.html).
    - **cairo**
-      The installation details (Linux/MacOS/Windows) are on the website: https://www.cairographics.org/download/
+      On linux the installation can be done from a package mananger (see more details here https://www.cairographics.org/download/)
+      On Windows, you can follows the steps of the cairo website or apply the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml} that use it.
    - **boost programm options** by default the application use the package `libboost-program-options-dev`. You can use you default package manager to install it.
 
 
