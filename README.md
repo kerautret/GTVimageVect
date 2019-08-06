@@ -1,5 +1,5 @@
 # GTVimageVect
-Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing" Authored by  Bertrand Kerautret and Jacques-Oliver Lachaud
+Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing" Authored by  Bertrand Kerautret and Jacques-Oliver Lachaud (2019)
 
 You can also access to [IPOL](http://www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000076)
 
@@ -38,11 +38,13 @@ The installation of the code is then:
      
 ## Typical Use:
    The algorithm is run from executable `tv-triangulation-color`. For instance you can use it follows from the build directory:
+   
    `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.eps`
-    Then you should obtain:
+   
+   Then you should obtain:
     <table>
-    <tr><td><img width="200" src="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png"></td>
-    <td><img width="200" src="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png"></td>
+    <tr><td><img width="300" src="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png"></td>
+    <td><img width="300" src="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png"></td>
     </tr>
     <tr> <td> source</td> <td>result </td> </tr>
 </table>
@@ -50,4 +52,11 @@ The installation of the code is then:
 
 
 ## Reproduction of Paper Figures
+All the figures of the paper can be reproduced from the following script `script-figures.sh`.
+You just have to run by specifying the Input/Output directory:
+
+`
+ script-figures.sh Input Output
+`
+
 
