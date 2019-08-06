@@ -22,8 +22,8 @@ To use this source code, you need to install the following dependencies:
      For any problem, don't hesitate to contact the DGtal team on the [GitHub repository](https://github.com/DGtal-team/DGtal).
      On windows or more details see instructions [here](https://dgtal-team.github.io/doc-nightly/moduleBuildDGtal.html).
    - **cairo**
-      On linux the installation can be done from a package mananger (see more details here https://www.cairographics.org/download/)
-      On Windows, you can follows the steps of the cairo website or apply the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml} that use it.
+      On *Linux*, the installation can be done from a package mananger (see [here](https://www.cairographics.org/download/) for more details.
+      On *Windows*, you can follow the steps of the cairo website or run the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml) that uses it.
    - **boost programm options** by default the application use the package `libboost-program-options-dev`. You can use you default package manager to install it.
 
 
@@ -36,9 +36,17 @@ The installation of the code is then:
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
      
-## Typical Use
-
-
+## Typical Use:
+   The algorithm is run from executable `tv-triangulation-color`. For instance you can use it follows from the build directory:
+   `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.eps`
+    Then you should obtain:
+    <table>
+    <tr><td><img width="200" src="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png"></td>
+    <td><img width="200" src="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png"></td>
+    </tr>
+    <tr> <td> source</td> <td>result </td> </tr>
+</table>
+                                           
 
 
 ## Reproduction of Paper Figures
