@@ -23,7 +23,7 @@ To use this source code, you need to install the following dependencies:
      On windows or more details see instructions [here](https://dgtal-team.github.io/doc-nightly/moduleBuildDGtal.html).
    - **cairo**
       On *Linux*, the installation can be done from a package mananger (see [here](https://www.cairographics.org/download/) for more details.
-      On *Windows*, you can follow the steps of the cairo website or run the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml) that uses it.
+      On *Windows*, you can follow the steps of the cairo website or run the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml)) that uses it.
    - **boost programm options** by default the application use the package `libboost-program-options-dev`. You can use you default package manager to install it.
 
 
