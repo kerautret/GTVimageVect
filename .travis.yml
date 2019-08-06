@@ -35,8 +35,6 @@ before_install:
 - export SRC_DIR="`pwd`"
 
 before_script:
-- if [ $TRAVIS_OS_NAME == linux ]; then echo "All done.";   fi
-- if [ $TRAVIS_OS_NAME == osx ]; then source .travis/install_deps_macos.sh; fi
 - DGTALTYPE="-DBUILD_EXAMPLES=OFF -DDGTAL_BUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=$CONFIG  -DWITH_QGLVIEWER=false -DWITH_ITK=false"
 - cd $SRC_DIR
 - git clone --depth=1 git://github.com/DGtal-team/DGtal.git
