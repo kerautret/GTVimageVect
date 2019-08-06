@@ -1,6 +1,5 @@
 #include <cfloat>
 #include <iostream>
-#include <cstdlib>
 #include <vector>
 #include <string>
 #include <boost/program_options/options_description.hpp>
@@ -42,7 +41,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 double randomUniform()
 {
-  return (double) random() / (double) RAND_MAX;
+  return (double) rand() / (double) RAND_MAX;
 }
 
 namespace DGtal {
