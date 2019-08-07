@@ -60,10 +60,12 @@ You just have to run by specifying the Input/Output directory:
  `script-figures.sh Input Output`
  
  The comparisons with existing algorithms can be applied onlne with the following demonstrations:
-   - Convolutional Neural Network for Subpixel Super-Resolution: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000078)
-   - Super resolution with HQx Algorithm: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000079)
-    
-    
+   - Convolutional Neural Network for Subpixel Super-Resolution [22]: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000078).
+   - Super resolution with HQx Algorithm [23]: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000079)
+   - Image Interpolation with Geometric Contour Stencils [7]: [online demo](http://demo.ipol.im/demo/g_interpolation_geometric_contour_stencils);
+  - Vector-valued image interpolation by an anisotropic diffusion-projection PDE [19]: [online demp](http://demo.ipol.im/demo/g_roussos_diffusion_interpolation/).
+  - Vector Magic Inc [10]: [online demo](http://vectormagic.com).
+  - Depixelizing [13] and Potrace [21] were produce by default parameter of [Inskape](https://inkscape.org/fr/).
  
 
 
