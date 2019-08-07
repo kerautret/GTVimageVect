@@ -58,5 +58,12 @@ You just have to run by specifying the Input/Output directory:
  `mkidr Output`
  
  `script-figures.sh Input Output`
+ 
+ The comparisons with existing algorithms can be applied onlne with the following demonstrations:
+   - Convolutional Neural Network for Subpixel Super-Resolution: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000078)
+   - Super resolution with HQx Algorithm: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000079)
+    
+    
+ 
 
 
