@@ -1,11 +1,5 @@
 #include "BasicVectoImageExporter.h"
-
 #include <sstream> 
-
-
-
-
-
 
 
 BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
@@ -26,97 +20,6 @@ BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
 
 
 
-
-
-void BasicVectoImageExporter::drawLine(const Point2D &pt1, const Point2D &pt2,  const  DGtal::Color &color, double lineWidth)
-{
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream    << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  myOutputStream    << lineWidth << " setlinewidth" << std::endl; 
-  myOutputStream    << pt1[0] << " " << pt1[1] << " moveto" << std::endl;
-  myOutputStream    << pt2[0] << " " << pt2[1] << " lineto" << std::endl;
-  myOutputStream    << "stroke" << std::endl;
-      
-}
-
-
-void BasicVectoImageExporter::addContour(const std::vector<BasicVectoImageExporter::Point2D> &contour,
-                                         const  DGtal::Color &color, double lineWidth)
-{
-  myOutputStream << "newpath" << std::endl;
-  addPathContent(contour);
-  myOutputStream << "closepath" << std::endl;
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  
-  myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
-  
-  
-}
-
-
-
-
-void BasicVectoImageExporter::addRegion(const std::vector<BasicVectoImageExporter::Point2D> &contour,
-                                        const  DGtal::Color &color, double linewidth)
-{
-  myOutputStream << "newpath" << std::endl;
-  addPathContent(contour);
-  myOutputStream << "closepath" << std::endl;
-  if(myDisplayMesh)
-    {
-      myOutputStream << "gsave" << std::endl;
-    }
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  myOutputStream << "fill" << std::endl;
-  if(myDisplayMesh)
-    {
-      myOutputStream << "grestore" << std::endl;
-      myOutputStream  << linewidth << " setlinewidth 0.7 0.2 0.2 setrgbcolor" << std::endl;
-      myOutputStream << "stroke" << std::endl;
-    }
-  
-}
-
-
-
-
-void BasicVectoImageExporter::addRegionWithHoles(const std::vector<BasicVectoImageExporter::Point2D> &contour,
-                        const std::vector<BasicVectoImageExporter::Contour2D> &listHoles,
-                        const DGtal::Color &color )
-{
-  myOutputStream << "newpath" << std::endl;
-  addPathContent(contour);
-  for(auto const &hole: listHoles)
-    {
-      addPathContent(hole);
-    }
-  myOutputStream << "closepath" << std::endl;
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  myOutputStream << "fill" << std::endl;
-}
-
-
-
-
-
-
-
-
 std::string BasicVectoImageExporter::getExportType(){
   switch (myExportType) {
     case EpsExport:
@@ -130,7 +33,6 @@ std::string BasicVectoImageExporter::getExportType(){
   }
   return "unknow";
 }
-
 
 
 void BasicVectoImageExporter::fillEPSHeader()
@@ -157,5 +59,4 @@ void BasicVectoImageExporter::fillSVGHeader()
                    << " xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" >"
                    << "<desc>output.svg, created with DGtalTools</desc>" << std::endl;
   }
-
 

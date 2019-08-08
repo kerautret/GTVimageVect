@@ -56,13 +56,37 @@ public:
       }
     };
 
-
   void fillSVGHeader();
   void fillEPSHeader();
   std::string getExportType();
   
-  void addContour(const std::vector<Point2D> &contour, const  DGtal::Color &color,double linewidth=0.1);
-  void addRegion(const std::vector<Point2D> &contour, const  DGtal::Color &color, double linewidth=0.1);
+  
+  
+  template<typename TContour>
+  void addRegion(const TContour &contour,
+                                          const  DGtal::Color &color, double linewidth)
+  {
+    myOutputStream << "newpath" << std::endl;
+    addPathContent(contour);
+    myOutputStream << "closepath" << std::endl;
+    if(myDisplayMesh)
+    {
+      myOutputStream << "gsave" << std::endl;
+    }
+    float r,g,b;
+    r = color.red()/255.0;
+    g = color.green()/255.0;
+    b = color.blue()/255.0;
+    myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+    myOutputStream << "fill" << std::endl;
+    if(myDisplayMesh)
+    {
+      myOutputStream << "grestore" << std::endl;
+      myOutputStream  << linewidth << " setlinewidth 0.7 0.2 0.2 setrgbcolor" << std::endl;
+      myOutputStream << "stroke" << std::endl;
+    }
+    
+  }
 
   template<typename TContour>
   void addRegions(const std::vector<TContour> &contours, const  DGtal::Color &color)
@@ -100,15 +124,63 @@ public:
 
     };
 
-
-  void addRegionWithHoles(const std::vector<Point2D> &contour,
-                          const std::vector<Contour2D> &listHoles,
-                          const  DGtal::Color &color );
+  template<typename TContour>
+  void addRegionWithHoles(const TContour &contour,
+                          const std::vector<TContour> &listHoles,
+                          const  DGtal::Color &color )
+  {
+    myOutputStream << "newpath" << std::endl;
+    addPathContent(contour);
+    for(auto const &hole: listHoles)
+    {
+      addPathContent(hole);
+    }
+    myOutputStream << "closepath" << std::endl;
+    float r,g,b;
+    r = color.red()/255.0;
+    g = color.green()/255.0;
+    b = color.blue()/255.0;
+    myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+    myOutputStream << "fill" << std::endl;
+  }
   
   
 
 
+  template<typename TPoint2D>
+  void drawLine(const TPoint2D &pt1, const TPoint2D &pt2,
+                const  DGtal::Color &color, double lineWidth=2.0)
+  {
+    float r,g,b;
+    r = color.red()/255.0;
+    g = color.green()/255.0;
+    b = color.blue()/255.0;
+    myOutputStream    << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+    myOutputStream    << lineWidth << " setlinewidth" << std::endl;
+    myOutputStream    << pt1[0] << " " << pt1[1] << " moveto" << std::endl;
+    myOutputStream    << pt2[0] << " " << pt2[1] << " lineto" << std::endl;
+    myOutputStream    << "stroke" << std::endl;
+    
+  }
+
   
+  void addContour(const std::vector<BasicVectoImageExporter::Point2D> &contour,
+                  const  DGtal::Color &color, double lineWidth=1.0)
+  {
+    myOutputStream << "newpath" << std::endl;
+    addPathContent(contour);
+    myOutputStream << "closepath" << std::endl;
+    float r,g,b;
+    r = color.red()/255.0;
+    g = color.green()/255.0;
+    b = color.blue()/255.0;
+    myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+    
+    myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
+    
+    
+  }
+
 
   template<typename TContour>
   void addPathContentBezier(const TContour &contour)
@@ -196,7 +268,6 @@ public:
     };
 
   
-  void drawLine(const Point2D &pt1,const Point2D &pt2, const  DGtal::Color &color, double lineWidth=2.0);  
 
   BasicVectoImageExporter(const std::string &imageName, unsigned int width, unsigned int height,
                           bool displayMesh = false, double  scale=1.0);
@@ -227,12 +298,6 @@ protected:
   ExportType myExportType=UnknowExport;
   
 };
-
-
-
-
-
-
 
 
 #endif // BASICVECTOIMAGEEXPORTER_H
