@@ -36,7 +36,7 @@ The installation of the code is then:
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
      
-## Typical Use:
+## Typical Use
    The algorithm is run from executable `tv-triangulation-color`. For instance you can use it follows from the build directory:
    
    `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.eps`
