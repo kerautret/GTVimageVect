@@ -19,6 +19,12 @@ public:
 
   typedef DGtal::Z2i::RealPoint Point2D;
   typedef std::vector<Point2D> Contour2D;
+  
+  void fillHeader();
+  void fillSVGHeader();
+  void fillEPSHeader();
+  std::string getExportType();
+  
 
 
   template<typename TContour2D>
@@ -56,11 +62,8 @@ public:
       }
     };
 
-  void fillSVGHeader();
-  void fillEPSHeader();
-  std::string getExportType();
-  
-  
+ 
+
   
   template<typename TContour>
   void addRegion(const TContour &contour,

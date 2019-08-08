@@ -35,6 +35,21 @@ std::string BasicVectoImageExporter::getExportType(){
 }
 
 
+void BasicVectoImageExporter::fillHeader()
+{
+  switch (myExportType) {
+    case EpsExport:
+      fillEPSHeader();
+      break;
+      case SvgExport:
+      fillSVGHeader();
+    default:
+      break;
+  }
+  DGtal::trace.warning() << "Header will be empty (unknow export type), change your extension file" << std::endl;
+}
+
+
 void BasicVectoImageExporter::fillEPSHeader()
 {
   myOutputStream << "%!PS-Adobe-2.0 EPSF-2.0"
