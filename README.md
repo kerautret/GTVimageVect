@@ -23,7 +23,7 @@ To use this source code, you need to install the following dependencies:
      On windows or more details see instructions [here](https://dgtal-team.github.io/doc-nightly/moduleBuildDGtal.html).
    - **cairo**
       On *Linux*, the installation can be done from a package mananger (see [here](https://www.cairographics.org/download/) for more details.
-      On *Windows*, you can follow the steps of the cairo website or run the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml) that uses it.
+      On *Windows*, you can follow the steps of the cairo website or run the script or upload the binary from the [cairo-windows](https://github.com/preshing/cairo-windows) repository. You can also consult the appveyor configuration file ([appveyor.yml](https://github.com/kerautret/GTVimageVect/blob/master/appveyor.yml)) that uses it.
    - **boost programm options** by default the application use the package `libboost-program-options-dev`. You can use you default package manager to install it.
 
 
@@ -36,7 +36,7 @@ The installation of the code is then:
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
      
-## Typical Use:
+## Typical Use
    The algorithm is run from executable `tv-triangulation-color`. For instance you can use it follows from the build directory:
    
    `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.eps`
@@ -55,8 +55,17 @@ The installation of the code is then:
 All the figures of the paper using the present algorihtms can be reproduced from the following script `script-figures.sh`.
 You just have to run by specifying the Input/Output directory:
 
-`
- script-figures.sh Input Output
-`
+ `mkidr Output`
+ 
+ `script-figures.sh Input Output`
+ 
+ The comparisons with existing algorithms can be applied onlne with the following demonstrations:
+   - Convolutional Neural Network for Subpixel Super-Resolution [22]: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000078).
+   - Super resolution with HQx Algorithm [23]: [online demo](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000079)
+   - Image Interpolation with Geometric Contour Stencils [7]: [online demo](http://demo.ipol.im/demo/g_interpolation_geometric_contour_stencils).
+  - Vector-valued image interpolation by an anisotropic diffusion-projection PDE [19]: [online demo](http://demo.ipol.im/demo/g_roussos_diffusion_interpolation/).
+  - Vector Magic Inc [10]: [online demo](http://vectormagic.com).
+  - Depixelizing [13] and Potrace [21] were produced by using  [Inskape](https://inkscape.org/fr/) with the default parameters.
+ 
 
 
