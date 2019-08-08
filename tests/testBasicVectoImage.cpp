@@ -62,7 +62,10 @@ int main( int argc, char** argv )
 
   auto contoursHole = std::vector<std::vector<Z2i::RealPoint>>();
   contoursHole.push_back(hole);
+
+
   exporter.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
+  exporterSVG.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
 
   return 0;
 }

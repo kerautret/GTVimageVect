@@ -12,7 +12,7 @@ BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
   myExportType = (ext == "svg" || ext == "SVG")? ExportType::SvgExport :
                  (ext == "eps" || ext == "EPS")? ExportType::EpsExport: UnknowExport;
   myOutputStream.open(imageName, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
-  fillEPSHeader();
+  fillHeader();
   myDisplayMesh = displayMesh;
   LINE_COLOR  = " 0.8 0.1 0.1 ";
   POINT_COLOR = " 0.1 0.1 0.8 ";
@@ -41,12 +41,13 @@ void BasicVectoImageExporter::fillHeader()
     case EpsExport:
       fillEPSHeader();
       break;
-      case SvgExport:
+    case SvgExport:
       fillSVGHeader();
+      break;
     default:
+      DGtal::trace.warning() << "Header will be empty (unknow export type), change your extension file" << std::endl;
       break;
   }
-  DGtal::trace.warning() << "Header will be empty (unknow export type), change your extension file" << std::endl;
 }
 
 
