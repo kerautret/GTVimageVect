@@ -27,7 +27,6 @@ use_cxx11()
 # DGtal
 FIND_PACKAGE(DGtal REQUIRED)
 INCLUDE_DIRECTORIES(${DGTAL_INCLUDE_DIRS})
-LINK_DIRECTORIES(${DGTAL_LIBRARY_DIRS})
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 
@@ -96,8 +95,18 @@ SET(SRCs
   tv-triangulation-color
 )
 
+SET(SRC_COMP
+ ${PROJECT_SOURCE_DIR}/BasicVectoImageExporter.cpp  
+)
+
+
   
 FOREACH(FILE ${SRCs})
-  add_executable(${FILE} ${FILE} BasicVectoImageExporter)
+  add_executable(${FILE} ${FILE} ${SRC_COMP})
   target_link_libraries( ${FILE}  ${CAIRO_LIBRAIRIES} ${DGTAL_LIBRARIES} ${GTVDep} )
 ENDFOREACH(FILE)
+
+
+
+
+add_subdirectory(tests)
