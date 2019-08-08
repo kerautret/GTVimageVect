@@ -15,8 +15,8 @@ BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
   myWidth=width;
   myHeight=height;
   std::string ext = imageName.substr( imageName.find_last_of(".") + 1 );
-  myExportType = (ext == ".svg" || ext == ".SGG")? ExportType::SvgExport :
-                 (ext == ".eps" || ext == ".EPS")? ExportType::EpsExport: UnknowExport;
+  myExportType = (ext == "svg" || ext == "SVG")? ExportType::SvgExport :
+                 (ext == "eps" || ext == "EPS")? ExportType::EpsExport: UnknowExport;
   myOutputStream.open(imageName, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
   fillEPSHeader();
   myDisplayMesh = displayMesh;
@@ -117,6 +117,19 @@ void BasicVectoImageExporter::addRegionWithHoles(const std::vector<BasicVectoIma
 
 
 
+std::string BasicVectoImageExporter::getExportType(){
+  switch (myExportType) {
+    case EpsExport:
+      return "eps";
+      break;
+    case SvgExport:
+      return "svg";
+      break;
+    default:
+      break;
+  }
+  return "unknow";
+}
 
 
 

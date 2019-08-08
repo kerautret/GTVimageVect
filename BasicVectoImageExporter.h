@@ -59,7 +59,8 @@ public:
 
   void fillSVGHeader();
   void fillEPSHeader();
-
+  std::string getExportType();
+  
   void addContour(const std::vector<Point2D> &contour, const  DGtal::Color &color,double linewidth=0.1);
   void addRegion(const std::vector<Point2D> &contour, const  DGtal::Color &color, double linewidth=0.1);
 
