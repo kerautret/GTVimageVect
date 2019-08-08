@@ -65,7 +65,7 @@ You just have to run by specifying the Input/Output directory:
    - Image Interpolation with Geometric Contour Stencils [7]: [online demo](http://demo.ipol.im/demo/g_interpolation_geometric_contour_stencils).
   - Vector-valued image interpolation by an anisotropic diffusion-projection PDE [19]: [online demo](http://demo.ipol.im/demo/g_roussos_diffusion_interpolation/).
   - Vector Magic Inc [10]: [online demo](http://vectormagic.com).
-  - Depixelizing [13] and Potrace [21] were produced by default parameter of [Inskape](https://inkscape.org/fr/).
+  - Depixelizing [13] and Potrace [21] were produced by using  [Inskape](https://inkscape.org/fr/) with the default parameters.
  
 
 
