@@ -13,10 +13,8 @@ class BasicVectoImageExporter{
   std::string POINT_COLOR;// = " 0.1 0.1 0.8 ";
   
   typedef enum {EpsExport, SvgExport, UnknowExport} ExportType;
-  
-  
-public:
 
+public:
   typedef DGtal::Z2i::RealPoint Point2D;
   typedef std::vector<Point2D> Contour2D;
   
@@ -33,13 +31,19 @@ public:
     {
       return;
     }
-    myOutputStream << contour[0][0] << " " << contour[0][1] << " moveto" << std::endl;
-  
-    for(unsigned int i = 1; i<contour.size(); i++)
+    if (myExportType==EpsExport)
     {
-      myOutputStream << contour[i][0] << " " << contour[i][1] << " lineto" << std::endl;
+      myOutputStream << contour[0][0] << " " << contour[0][1] << " moveto" << std::endl;
+      for(unsigned int i = 1; i<contour.size(); i++)
+      {
+        myOutputStream << contour[i][0] << " " << contour[i][1] << " lineto" << std::endl;
+      }
+      myOutputStream << contour[0][0] << " " << contour[0][1] << " lineto" << std::endl;
     }
-    myOutputStream << contour[0][0] << " " << contour[0][1] << " lineto" << std::endl;
+    else if (myExportType==SvgExport)
+    {
+      
+    }
   };
 
   
@@ -165,9 +169,10 @@ public:
     myOutputStream    << "stroke" << std::endl;
     
   }
-
   
-  void addContour(const std::vector<BasicVectoImageExporter::Point2D> &contour,
+  
+  template<typename TPoint2D>
+  void addContour(const std::vector<TPoint2D> &contour,
                   const  DGtal::Color &color, double lineWidth=1.0)
   {
     myOutputStream << "newpath" << std::endl;
@@ -180,8 +185,6 @@ public:
     myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
     
     myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
-    
-    
   }
 
 

@@ -35,6 +35,7 @@ std::string BasicVectoImageExporter::getExportType(){
 }
 
 
+
 void BasicVectoImageExporter::fillHeader()
 {
   switch (myExportType) {
