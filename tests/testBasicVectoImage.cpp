@@ -10,8 +10,6 @@
 #include <DGtal/base/Alias.h>
 #include <DGtal/helpers/StdDefs.h>
 
-
-
 #include "BasicVectoImageExporter.h"
 
 ///////////////////////////////////////////////////////////////////////////////

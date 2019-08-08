@@ -12,6 +12,8 @@ class BasicVectoImageExporter{
   std::string LINE_COLOR;// = " 0.8 0.1 0.1 ";
   std::string POINT_COLOR;// = " 0.1 0.1 0.8 ";
   
+  typedef enum {EpsExport, SvgExport, UnknowExport} ExportType;
+  
   
 public:
 
@@ -221,7 +223,7 @@ protected:
   // Associate for each plain contours a set of index representing the contour holes.
   std::map<unsigned int, std::vector<unsigned int> > mapHoles; 
   std::map<unsigned int, DGtal::Color> colorMap;
-
+  ExportType myExportType=UnknowExport;
   
 };
 
