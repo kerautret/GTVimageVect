@@ -162,7 +162,9 @@ public:
     }
     else if (myExportType==SvgExport)
     {
-      myOutputStream << "<path \n style=\"fill:#"<< std::setw(2) << std::setfill('0') << r << g << b ;
+      myOutputStream << "<path \n style=\"fill:#" <<   std::setfill('0') << std::setw(2) << std::hex << (int)(r*255.0)
+      << std::setfill('0') << std::setw(2) << std::hex << (int)(g*255.0)
+      << std::setfill('0') << std::setw(2) << std::hex << (int)(b*255.0);
       myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
       myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
       myOutputStream << "d=\"";
@@ -171,20 +173,11 @@ public:
       {
         addPathContent(hole);
       }
-      
       myOutputStream << "\"\n";
       myOutputStream << "id=\"path"<< myCurrentIdPath << "\" \n";
       myOutputStream << "inkscape:connector-curvature=\"0\" ",
       myOutputStream << "sodipodi:nodetypes=\"cccccccccc\" />\n";
       myCurrentIdPath++;
-
-      // Path example:::
-      //      <path style="fill:#c6ddfa;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-//      d="m 91.406068,118.46374 -12.828675,34.74517 70.291827,30.20177 26.99422,-44.09963 z m 9.621982,8.82014 63.60977,17.105 -33.67578,21.38154 -40.625067,-20.57959 z"
-//      id="path872"
-//    inkscape:connector-curvature="0"
-//    sodipodi:nodetypes="cccccccccc" />
-//
     }
    
   }
