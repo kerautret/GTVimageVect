@@ -25,8 +25,12 @@ public:
   std::string getHexCode(const DGtal::Color &c);
   std::string getExportType();
   
-
-
+  template<typename CoordType>
+  CoordType reverseYCoord(CoordType y)
+  {
+    return myHeight - y;
+  }
+  
   template<typename TContour2D>
   void addPathContent(const TContour2D &contour){
     if( contour.size() == 0 )
@@ -45,12 +49,12 @@ public:
     else if (myExportType==SvgExport)
     {
       myOutputStream << "M ";
-      myOutputStream << contour[0][0] << "," << contour[0][1] << " " ;
+      myOutputStream << contour[0][0] << "," << reverseYCoord(contour[0][1]) << " " ;
       for(unsigned int i = 1; i<contour.size(); i++)
       {
-        myOutputStream << contour[i][0] << "," << contour[i][1] << " " ;
+        myOutputStream << contour[i][0] << "," << reverseYCoord(contour[i][1]) << " " ;
       }
-      myOutputStream << contour[0][0] << "," << contour[0][1] << " z " ;
+      myOutputStream << contour[0][0] << "," << reverseYCoord(contour[0][1]) << " z " ;
     }
   };
 
@@ -389,7 +393,7 @@ public:
     {
       for(const auto &p: contour)
       {
-        myOutputStream << "<circle cx=\""<< p[0] << "\" cy=\"" << p[1] <<"\" r=\""<< radius
+        myOutputStream << "<circle cx=\""<< p[0] << "\" cy=\"" << reverseYCoord( p[1]) <<"\" r=\""<< radius
         <<"\" fill = \"#" << getHexCode(color) << "\"/>";
       }
     }
