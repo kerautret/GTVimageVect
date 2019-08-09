@@ -53,20 +53,23 @@ int main( int argc, char** argv )
   using namespace DGtal;
   BasicVectoImageExporter exporter ("testExport.eps", 20, 20, true, 2.0);
   BasicVectoImageExporter exporterSVG ("testExport.svg", 20, 20, true, 2.0);
-
-  std::vector<Z2i::RealPoint> contour = {Z2i::RealPoint(2,2), Z2i::RealPoint(18, 2),
-                                  Z2i::RealPoint(18,18), Z2i::RealPoint(2,18)};
-  // to be considered as hole we need to drow it on opposite direction
-  std::vector<Z2i::RealPoint> hole = {Z2i::RealPoint(5,15), Z2i::RealPoint(15,15), Z2i::RealPoint(15, 5),Z2i::RealPoint(5,5)};
-  
   // test auto detected extension:
   trace.info() << "Export type (testExport.eps) : " << exporter.getExportType() << std::endl;
   trace.info() << "Export type (testExport.svg) : " << exporterSVG.getExportType() << std::endl;
+  
 
+  
+  std::vector<Z2i::RealPoint> contour = {Z2i::RealPoint(2,2), Z2i::RealPoint(18, 2),
+                                  Z2i::RealPoint(18,18), Z2i::RealPoint(2,18)};
+  // to be considered as hole we need to drow it on opposite direction
+  std::vector<Z2i::RealPoint> hole = {Z2i::RealPoint(5,15), Z2i::RealPoint(15,15),
+                                      Z2i::RealPoint(15,  5),Z2i::RealPoint(5,5)};
+  
   auto contoursHole = std::vector<std::vector<Z2i::RealPoint>>();
   contoursHole.push_back(hole);
-
-
+  exporter.addContourPoints(contour);
+  exporterSVG.addContourPoints(contour);
+  
   exporter.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
   exporterSVG.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
   exporter.closeFigure();

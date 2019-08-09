@@ -18,6 +18,13 @@ BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
   POINT_COLOR = " 0.1 0.1 0.8 ";
 }
 
+std::string BasicVectoImageExporter::getHexCode(const DGtal::Color &c){
+  std::stringstream ss;
+  ss << std::setfill('0') << std::setw(2) << std::hex << (int)(c.red())
+  << std::setfill('0') << std::setw(2) << std::hex << (int)(c.green())
+  << std::setfill('0') << std::setw(2) << std::hex << (int)(c.blue());
+  return ss.str();
+}
 
 
 std::string BasicVectoImageExporter::getExportType(){

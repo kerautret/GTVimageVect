@@ -22,6 +22,7 @@ public:
   void fillHeader();
   void fillSVGHeader();
   void fillEPSHeader();
+  std::string getHexCode(const DGtal::Color &c);
   std::string getExportType();
   
 
@@ -54,7 +55,7 @@ public:
   };
 
   
-
+  // Not yet used (@todo later add SVG case)
   template<typename TContour>
   void addPathContentBezierP0P1P2P3(const TContour &contour)
     {
@@ -75,7 +76,7 @@ public:
 
  
 
-  
+  // Used (@todo tp add SVG case)
   template<typename TContour>
   void addRegion(const TContour &contour,
                                           const  DGtal::Color &color, double linewidth)
@@ -101,7 +102,8 @@ public:
     }
     
   }
-
+  
+  // Used (@todo tp add SVG case)
   template<typename TContour>
   void addRegions(const std::vector<TContour> &contours, const  DGtal::Color &color)
     {
@@ -162,9 +164,7 @@ public:
     }
     else if (myExportType==SvgExport)
     {
-      myOutputStream << "<path \n style=\"fill:#" <<   std::setfill('0') << std::setw(2) << std::hex << (int)(r*255.0)
-      << std::setfill('0') << std::setw(2) << std::hex << (int)(g*255.0)
-      << std::setfill('0') << std::setw(2) << std::hex << (int)(b*255.0);
+      myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
       myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
       myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
       myOutputStream << "d=\"";
@@ -183,8 +183,7 @@ public:
   }
   
   
-
-
+  // Used (@todo tp add SVG case)
   template<typename TPoint2D>
   void drawLine(const TPoint2D &pt1, const TPoint2D &pt2,
                 const  DGtal::Color &color, double lineWidth=2.0)
@@ -201,7 +200,7 @@ public:
     
   }
   
-  
+  // Used (@todo tp add SVG case)
   template<typename TPoint2D>
   void addContour(const std::vector<TPoint2D> &contour,
                   const  DGtal::Color &color, double lineWidth=1.0)
@@ -218,7 +217,7 @@ public:
     myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
   }
 
-
+  // Not yet used (@todo later add SVG case)
   template<typename TContour>
   void addPathContentBezier(const TContour &contour)
     {
@@ -237,7 +236,7 @@ public:
 
     }
 
-  
+  // Not yet used (@todo later add SVG case)
   template<typename TContour>
   void addRegionsBezier(const std::vector<TContour> &contours, const  DGtal::Color &color, bool basicOrder=false){
     myOutputStream << "newpath" << std::endl;
@@ -279,30 +278,40 @@ public:
   }
   
 
-
-
+  
+  // Not yet used (@todo later add SVG case)
   template<typename TContour>
   void addContourPoints(const TContour &contour,  const  DGtal::Color &color=DGtal::Color::Red, double radius=2.0)
+  {
+    float r,g,b;
+    r = color.red()/255.0;
+    g = color.green()/255.0;
+    b = color.blue()/255.0;
+    if( myExportType == EpsExport)
     {
-      float r,g,b;
-      r = color.red()/255.0;
-      g = color.green()/255.0;  
-      b = color.blue()/255.0;
       myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
       if( contour.size() == 0 )
       {
         return;
       }
-  
+      
       for(const auto &p: contour)
       {
         myOutputStream << p[0] << " " << p[1] << " moveto" << std::endl;
         myOutputStream << std::fixed << p[0] << " " << p[1] << " "<< radius<< " 0  360 arc" << std::endl;
         myOutputStream << "fill" << std::endl;
       }
-  
-  
-    };
+    }
+    else if (myExportType == SvgExport)
+    {
+      for(const auto &p: contour)
+      {
+        myOutputStream << "<circle cx=\""<< p[0] << "\" cy=\"" << p[1] <<"\" r=\""<< radius
+        <<"\" fill = \"#" << getHexCode(color) << "\"/>";
+      }
+    }
+    
+  };
 
   
 
