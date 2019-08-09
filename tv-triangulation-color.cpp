@@ -3128,9 +3128,9 @@ int main( int argc, char** argv )
     ("connectivity", po::value<std::string>()->default_value( "Order" ), "Indicates the strategy for determining the connectivity of ambiguous pixels: Size | Order. Size is best for 1-bit images, Order is best for color images." )
     ("debug", "specifies the DEBUG mode: output some intermediate results in cc.ppm and order.ppm." )
     ("displayMesh", "display mesh of the vectorial display." )
-    ("exportVectMesh,e", po::value<std::string>(), "Export the triangle mesh." )
-    ("exportVectMeshDual,E", po::value<std::string>(), "Export the triangle mesh." )
-    ("exportVectContoursDual,C", po::value<std::string>(), "Export the image regions filled." )
+    ("exportVectMesh,e", po::value<std::vector<std::string> >()->multitoken(), "Export the triangle mesh." )
+    ("exportVectMeshDual,E", po::value<std::vector<std::string> >()->multitoken(), "Export the triangle mesh." )
+    ("exportVectContoursDual,C", po::value<std::vector<std::string> >()->multitoken(), "Export the image regions filled." )
     ("epsScale", po::value<double>()->default_value( 1.0 ), "Change the default eps scale to increase display size on small images (using 10 will display easely small images while 1.0 is more adapted to bigger images) . " )
     ("numColorExportVectDual", po::value<unsigned int>()->default_value(0), "num of the color of the map." )
     ("regularizeContour,R", po::value<int>()->default_value( 20 ), "regularizes the dual contours for <nb> iterations." )
@@ -3474,25 +3474,28 @@ int main( int argc, char** argv )
     {
       unsigned int w = image.extent()[ 0 ];
       unsigned int h = image.extent()[ 1 ];
-      std::string name = vm["exportVectMesh"].as<std::string>();
-      exportVectMesh(TVT, name, w, h ,vm.count("displayMesh"), epsScale);
-      
+      for (auto name: vm["exportVectMesh"].as<std::vector<string>>()){
+        exportVectMesh(TVT, name, w, h ,vm.count("displayMesh"), epsScale);
+      }
     }
   if(vm.count("exportVectMeshDual"))
     {
       unsigned int w = image.extent()[ 0 ];
       unsigned int h = image.extent()[ 1 ];
-      std::string name = vm["exportVectMeshDual"].as<std::string>();
-      unsigned int numColor = vm["numColorExportVectDual"].as<unsigned int>();
-      exportVectMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, epsScale);
-      
+      for (auto name: vm["exportVectMeshDual"].as<std::vector<std::string>>())
+      {
+        unsigned int numColor = vm["numColorExportVectDual"].as<unsigned int>();
+        exportVectMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, epsScale);
+      }
     }
   if(vm.count("exportVectContoursDual"))
   {
     unsigned int w = image.extent()[ 0 ];
     unsigned int h = image.extent()[ 1 ];
-    std::string name = vm["exportVectContoursDual"].as<std::string>();
-    exportVectContoursDual(TVT, name, w, h, epsScale);
+    for (auto name: vm["exportVectContoursDual"].as<std::vector<std::string>>())
+    {
+      exportVectContoursDual(TVT, name, w, h, epsScale);
+    }
   }
   trace.endBlock();
   timeExport = c.stopClock();
