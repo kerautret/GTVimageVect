@@ -2816,7 +2816,7 @@ namespace DGtal {
       expMean.addRegion(tr, DGtal::Color(valMean[0], valMean[1], valMean[2]), 0.001);  
     }
     
-    
+    exp.closeFigure();
   }
 
   TVTriangulation::Arc pivotNext(TVTriangulation& tvT, TVTriangulation::Arc a,
@@ -3068,6 +3068,7 @@ namespace DGtal {
         }
         exp.addContour(c, col, 0.1);}
     }
+    exp.closeFigure();
   }
 
 
@@ -3082,7 +3083,7 @@ namespace DGtal {
       DGtal::Color col = c.first;
       exp.addRegions(c.second, col);
     }
-    
+    exp.closeFigure();
   }
 
 
