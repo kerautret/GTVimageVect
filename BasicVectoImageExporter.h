@@ -18,6 +18,7 @@ public:
   typedef DGtal::Z2i::RealPoint Point2D;
   typedef std::vector<Point2D> Contour2D;
   
+  void closeFigure();
   void fillHeader();
   void fillSVGHeader();
   void fillEPSHeader();
@@ -42,7 +43,13 @@ public:
     }
     else if (myExportType==SvgExport)
     {
-      
+      myOutputStream << "M ";
+      myOutputStream << contour[0][0] << "," << contour[0][1] << " " ;
+      for(unsigned int i = 1; i<contour.size(); i++)
+      {
+        myOutputStream << contour[i][0] << "," << contour[i][1] << " " ;
+      }
+      myOutputStream << contour[0][0] << "," << contour[0][1] << " z " ;
     }
   };
 
@@ -136,19 +143,50 @@ public:
                           const std::vector<TContour> &listHoles,
                           const  DGtal::Color &color )
   {
-    myOutputStream << "newpath" << std::endl;
-    addPathContent(contour);
-    for(auto const &hole: listHoles)
-    {
-      addPathContent(hole);
-    }
-    myOutputStream << "closepath" << std::endl;
     float r,g,b;
     r = color.red()/255.0;
     g = color.green()/255.0;
     b = color.blue()/255.0;
-    myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-    myOutputStream << "fill" << std::endl;
+    if (myExportType==EpsExport)
+    {
+      myOutputStream << "newpath" << std::endl;
+      addPathContent(contour);
+      for(auto const &hole: listHoles)
+      {
+        addPathContent(hole);
+      }
+      myOutputStream << "closepath" << std::endl;
+      
+      myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+      myOutputStream << "fill" << std::endl;
+    }
+    else if (myExportType==SvgExport)
+    {
+      myOutputStream << "<path \n style=\"fill:#"<< std::setw(2) << std::setfill('0') << r << g << b ;
+      myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
+      myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
+      myOutputStream << "d=\"";
+      addPathContent(contour);
+      for(auto const &hole: listHoles)
+      {
+        addPathContent(hole);
+      }
+      
+      myOutputStream << "\"\n";
+      myOutputStream << "id=\"path"<< myCurrentIdPath << "\" \n";
+      myOutputStream << "inkscape:connector-curvature=\"0\" ",
+      myOutputStream << "sodipodi:nodetypes=\"cccccccccc\" />\n";
+      myCurrentIdPath++;
+
+      // Path example:::
+      //      <path style="fill:#c6ddfa;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+//      d="m 91.406068,118.46374 -12.828675,34.74517 70.291827,30.20177 26.99422,-44.09963 z m 9.621982,8.82014 63.60977,17.105 -33.67578,21.38154 -40.625067,-20.57959 z"
+//      id="path872"
+//    inkscape:connector-curvature="0"
+//    sodipodi:nodetypes="cccccccccc" />
+//
+    }
+   
   }
   
   
@@ -291,7 +329,7 @@ protected:
 
   double myShiftX =  0.0;
   double myShiftY =  0.0;
-
+  int myCurrentIdPath = 1;
   std::vector<Contour2D> myPlainContours;
   std::vector<Contour2D> myHoleContours;
   std::string myImageName;

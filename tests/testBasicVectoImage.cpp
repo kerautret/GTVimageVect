@@ -15,6 +15,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 namespace po = boost::program_options;
 ///////////////////////////////////////////////////////////////////////////////
+void toto()
+{
+  
+}
 
 int main( int argc, char** argv )
 {
@@ -45,7 +49,6 @@ int main( int argc, char** argv )
       return 0;
     }
 
-  
   using namespace std;
   using namespace DGtal;
   BasicVectoImageExporter exporter ("testExport.eps", 20, 20, true, 2.0);
@@ -66,6 +69,8 @@ int main( int argc, char** argv )
 
   exporter.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
   exporterSVG.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
+  exporter.closeFigure();
+  exporterSVG.closeFigure();
 
   return 0;
 }
