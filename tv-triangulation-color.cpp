@@ -2773,7 +2773,7 @@ namespace DGtal {
 			   discontinuities, stiffness, amplitude );
   }
 
-  void exportEPSMesh(TVTriangulation& tvT, const std::string &name, unsigned int width,
+  void exportVectMesh(TVTriangulation& tvT, const std::string &name, unsigned int width,
                      unsigned int height, bool displayMesh=true, double scale=1.0)
   {
     BasicVectoImageExporter exp( name, width, height, displayMesh, 100);
@@ -3009,71 +3009,71 @@ namespace DGtal {
 
 
   
-  void exportEPSMeshDual(TVTriangulation& tvT, const std::string &name, unsigned int width,
-                         unsigned int height, bool displayMesh, unsigned int numColor, double scale)
+  void exportVectMeshDual(TVTriangulation& tvT, const std::string &name, unsigned int width,
+                          unsigned int height, bool displayMesh, unsigned int numColor, double scale)
   {
-    BasicVectoImageExporter exp( name, width, height, displayMesh, scale);    
+    BasicVectoImageExporter exp( name, width, height, displayMesh, scale);
     for(TVTriangulation::VertexIndex v = 0; v < tvT.T.nbVertices(); v++)
     {
       std::vector<TVTriangulation::RealPoint> tr;
       auto outArcs = tvT.T.outArcs( v );
       for ( auto rit = outArcs.rbegin(), ritEnd = outArcs.rend();
-	    rit != ritEnd; ++rit ) {
-	auto a = *rit;
-	tr.push_back( tvT.contourPoint( a ) );
-	if ( tvT.T.isArcBoundary( a ) ) {
-	  trace.warning() << "Boundary arc" << std::endl;
-	} else {
-	  auto f = tvT.T.faceAroundArc( a );
-	  tr.push_back( tvT.barycenter( f ) );
-	}
+           rit != ritEnd; ++rit ) {
+        auto a = *rit;
+        tr.push_back( tvT.contourPoint( a ) );
+        if ( tvT.T.isArcBoundary( a ) ) {
+          trace.warning() << "Boundary arc" << std::endl;
+        } else {
+          auto f = tvT.T.faceAroundArc( a );
+          tr.push_back( tvT.barycenter( f ) );
+        }
       }
       // TVTriangulation::FaceRange F = tvT.T.facesAroundVertex( v );
       // for(auto f: F)
       // {
       //   TVTriangulation::Point center = tvT.barycenter( f );
-	
+      
       //   // TVTriangulation::VertexRange V = tvT.T.verticesAroundFace( f );
       //   // TVTriangulation::Point center = tvT.T.position(V[0])+tvT.T.position(V[1])+tvT.T.position(V[2]);
       //   // center /= 3.0;
       //   tr.push_back(center);
       // }
       TVTriangulation::Value val = tvT.u(v);
-      exp.addRegion(tr, DGtal::Color(val[0], val[1], val[2]), 0.001);        
+      exp.addRegion(tr, DGtal::Color(val[0], val[1], val[2]), 0.001);
       
     }
     if(displayMesh)
+    {
+      for(TVTriangulation::Face f = 0; f < tvT.T.nbFaces(); f++)
       {
-        for(TVTriangulation::Face f = 0; f < tvT.T.nbFaces(); f++)
-	  {
-	    TVTriangulation::VertexRange V = tvT.T.verticesAroundFace( f );
-	    std::vector<TVTriangulation::RealPoint> tr;
-	    tr.push_back(tvT.T.position(V[0]));
-	    tr.push_back(tvT.T.position(V[1]));
-	    tr.push_back(tvT.T.position(V[2]));
-	    tr.push_back(tvT.T.position(V[0]));
-	    
-	    exp.addContour(tr, DGtal::Color(0, 200, 200), 0.01);        
-	  }
-        std::vector<std::vector<TVTriangulation::RealPoint> > contour = trackBorders(tvT, numColor);
-        for (auto c: contour){
-            DGtal::Color col;
-            if(ContourHelper::isCounterClockWise(c) )
-            {
-                col = DGtal::Color(200, 20, 200);
-            }
-            else
-            {
-                col = DGtal::Color(200, 200, 20);
-            }
-            exp.addContour(c, col, 0.1);}
-      } 
+        TVTriangulation::VertexRange V = tvT.T.verticesAroundFace( f );
+        std::vector<TVTriangulation::RealPoint> tr;
+        tr.push_back(tvT.T.position(V[0]));
+        tr.push_back(tvT.T.position(V[1]));
+        tr.push_back(tvT.T.position(V[2]));
+        tr.push_back(tvT.T.position(V[0]));
+        
+        exp.addContour(tr, DGtal::Color(0, 200, 200), 0.01);
+      }
+      std::vector<std::vector<TVTriangulation::RealPoint> > contour = trackBorders(tvT, numColor);
+      for (auto c: contour){
+        DGtal::Color col;
+        if(ContourHelper::isCounterClockWise(c) )
+        {
+          col = DGtal::Color(200, 20, 200);
+        }
+        else
+        {
+          col = DGtal::Color(200, 200, 20);
+        }
+        exp.addContour(c, col, 0.1);}
+    }
   }
 
 
 
   
-  void exportEPSContoursDual(TVTriangulation& tvT, const std::string &name, unsigned int width,
+  void exportVectContoursDual(TVTriangulation& tvT, const std::string &name, unsigned int width,
                              unsigned int height, double scale)
   {
     BasicVectoImageExporter exp( name, width, height, false, scale);    
@@ -3127,12 +3127,12 @@ int main( int argc, char** argv )
     ("similarity", po::value<double>()->default_value( 0.0 ), "Tells when two colors are considered identical for connectedness." )
     ("connectivity", po::value<std::string>()->default_value( "Order" ), "Indicates the strategy for determining the connectivity of ambiguous pixels: Size | Order. Size is best for 1-bit images, Order is best for color images." )
     ("debug", "specifies the DEBUG mode: output some intermediate results in cc.ppm and order.ppm." )
-    ("displayMesh", "display mesh of the eps display." )
-    ("exportEPSMesh,e", po::value<std::string>(), "Export the triangle mesh." )
-    ("exportEPSMeshDual,E", po::value<std::string>(), "Export the triangle mesh." )
-    ("exportEPSContoursDual,C", po::value<std::string>(), "Export the image regions filled." )
+    ("displayMesh", "display mesh of the vectorial display." )
+    ("exportVectMesh,e", po::value<std::string>(), "Export the triangle mesh." )
+    ("exportVectMeshDual,E", po::value<std::string>(), "Export the triangle mesh." )
+    ("exportVectContoursDual,C", po::value<std::string>(), "Export the image regions filled." )
     ("epsScale", po::value<double>()->default_value( 1.0 ), "Change the default eps scale to increase display size on small images (using 10 will display easely small images while 1.0 is more adapted to bigger images) . " )
-    ("numColorExportEPSDual", po::value<unsigned int>()->default_value(0), "num of the color of the map." )
+    ("numColorExportVectDual", po::value<unsigned int>()->default_value(0), "num of the color of the map." )
     ("regularizeContour,R", po::value<int>()->default_value( 20 ), "regularizes the dual contours for <nb> iterations." )
     ("zip,z", po::value<double>()->default_value( 1.0 ), "Compresses the triangulation to keep only the given proportion of vertices." )
     ("zip-method,Z", po::value<std::string>()->default_value( "Laplacian" ), "zip method in Laplacian | Merge." )
@@ -3406,8 +3406,8 @@ int main( int argc, char** argv )
       std::string pname = "zip-primal.eps";
       // std::string dname = "zip-dual.eps";
       double epsScale = vm["epsScale"].as<double>();
-      exportEPSMesh(TVTzip, pname, w, h , true, epsScale);
-      //      exportEPSMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
+      exportVectMesh(TVTzip, pname, w, h , true, epsScale);
+      //      exportVectMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
     }
   trace.endBlock();
   }//  else if ( z_method == "Laplacian" ) {
@@ -3458,8 +3458,8 @@ int main( int argc, char** argv )
   //       std::string pname = "zip-primal.eps";
   //       // std::string dname = "zip-dual.eps";
   //       double epsScale = vm["epsScale"].as<double>();
-  //       exportEPSMesh(TVTzip, pname, w, h , true, epsScale);
-  //       //      exportEPSMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
+  //       exportVectMesh(TVTzip, pname, w, h , true, epsScale);
+  //       //      exportVectMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
   //     }
   //   }
   //   trace.endBlock();
@@ -3470,29 +3470,29 @@ int main( int argc, char** argv )
   trace.beginBlock("Export base triangulation");
 
   double epsScale = vm["epsScale"].as<double>();
-  if(vm.count("exportEPSMesh"))
+  if(vm.count("exportVectMesh"))
     {
       unsigned int w = image.extent()[ 0 ];
       unsigned int h = image.extent()[ 1 ];
-      std::string name = vm["exportEPSMesh"].as<std::string>();
-      exportEPSMesh(TVT, name, w, h ,vm.count("displayMesh"), epsScale);
+      std::string name = vm["exportVectMesh"].as<std::string>();
+      exportVectMesh(TVT, name, w, h ,vm.count("displayMesh"), epsScale);
       
     }
-  if(vm.count("exportEPSMeshDual"))
+  if(vm.count("exportVectMeshDual"))
     {
       unsigned int w = image.extent()[ 0 ];
       unsigned int h = image.extent()[ 1 ];
-      std::string name = vm["exportEPSMeshDual"].as<std::string>();
-      unsigned int numColor = vm["numColorExportEPSDual"].as<unsigned int>();
-      exportEPSMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, epsScale);
+      std::string name = vm["exportVectMeshDual"].as<std::string>();
+      unsigned int numColor = vm["numColorExportVectDual"].as<unsigned int>();
+      exportVectMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, epsScale);
       
     }
-  if(vm.count("exportEPSContoursDual"))
+  if(vm.count("exportVectContoursDual"))
   {
     unsigned int w = image.extent()[ 0 ];
     unsigned int h = image.extent()[ 1 ];
-    std::string name = vm["exportEPSContoursDual"].as<std::string>();
-    exportEPSContoursDual(TVT, name, w, h, epsScale);
+    std::string name = vm["exportVectContoursDual"].as<std::string>();
+    exportVectContoursDual(TVT, name, w, h, epsScale);
   }
   trace.endBlock();
   timeExport = c.stopClock();
