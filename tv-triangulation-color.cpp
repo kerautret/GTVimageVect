@@ -2928,6 +2928,7 @@ namespace DGtal {
     {
       if(tvT.T.isArcBoundary(a))
       {
+      
         tvT.invalidate(tvT.T.head(a));
         tvT.invalidate(tvT.T.tail(a));
       }
@@ -3074,16 +3075,18 @@ namespace DGtal {
 
 
   
-  void exportVectContoursDual(TVTriangulation& tvT, const std::string &name, unsigned int width,
+  void exportVectContoursDual(TVTriangulation& tvT, const std::vector<std::string> &vectName, unsigned int width,
                              unsigned int height, double scale)
   {
-    BasicVectoImageExporter exp( name, width, height, false, scale);    
     std::vector<TVTriangulation::ColorContours> contourCol = trackAllBorders(tvT, width, height);
-    for (auto c: contourCol){
-      DGtal::Color col = c.first;
-      exp.addRegions(c.second, col);
+    for (auto name: vectName){
+      BasicVectoImageExporter exp( name, width, height, false, scale);
+      for (auto c: contourCol){
+        DGtal::Color col = c.first;
+        exp.addRegions(c.second, col);
+      }
+      exp.closeFigure();
     }
-    exp.closeFigure();
   }
 
 
@@ -3493,10 +3496,8 @@ int main( int argc, char** argv )
   {
     unsigned int w = image.extent()[ 0 ];
     unsigned int h = image.extent()[ 1 ];
-    for (auto name: vm["exportVectContoursDual"].as<std::vector<std::string>>())
-    {
-      exportVectContoursDual(TVT, name, w, h, epsScale);
-    }
+    auto lname = vm["exportVectContoursDual"].as<std::vector<std::string>>();
+    exportVectContoursDual(TVT, lname, w, h, epsScale);
   }
   trace.endBlock();
   timeExport = c.stopClock();

@@ -11,7 +11,9 @@
 class BasicVectoImageExporter{
   std::string LINE_COLOR;// = " 0.8 0.1 0.1 ";
   std::string POINT_COLOR;// = " 0.1 0.1 0.8 ";
-  
+  const float emptyCntWidth = 0.01;
+  const float meshCntWidth = 0.1;
+
   typedef enum {EpsExport, SvgExport, UnknowExport} ExportType;
 
 public:
@@ -105,6 +107,11 @@ public:
         myOutputStream << "grestore" << std::endl;
         myOutputStream  << linewidth << " setlinewidth 0.7 0.2 0.2 setrgbcolor" << std::endl;
         myOutputStream << "stroke" << std::endl;
+      }else
+      {
+        myOutputStream << "grestore" << std::endl;
+        myOutputStream  << emptyCntWidth << " setlinewidth " << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+        myOutputStream << "stroke" << std::endl;
       }
     }
     else if(myExportType == SvgExport)
@@ -112,13 +119,13 @@ public:
       if(!myDisplayMesh)
       {
         myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-        myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
+        myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:#"<<getHexCode(color)<<";stroke-width:"<<emptyCntWidth<<"px;";
         myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
         myOutputStream << "d=\"";
       }else
       {
         myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-        myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:0.2px;";
+        myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:"<< meshCntWidth<<"px;";
         myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
         myOutputStream << "d=\"";
         
@@ -139,47 +146,54 @@ public:
     {
       if(myExportType == EpsExport)
       {
+        myOutputStream  << emptyCntWidth <<  " setlinewidth" << std::endl;
+        float r,g,b;
+        r = color.red()/255.0;
+        g = color.green()/255.0;
+        b = color.blue()/255.0;
+        myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+        
         myOutputStream << "newpath" << std::endl;
         for(auto const &cnt: contours)
         {
           addPathContent(cnt);
         }
         myOutputStream << " closepath " << std::endl;
-        if(myDisplayMesh)
-        {
-          myOutputStream << "gsave" << std::endl;
-        }
-        
-        float r,g,b;
-        r = color.red()/255.0;
-        g = color.green()/255.0;
-        b = color.blue()/255.0;
-        myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+       // myOutputStream << "gsave" << std::endl;
+
+
+        myOutputStream << "gsave" << std::endl;
         myOutputStream << "fill" << std::endl;
+        myOutputStream << "grestore" << std::endl;
+        myOutputStream << "stroke" << std::endl;
+        
+        
         if(myDisplayMesh)
         {
           myOutputStream << "grestore" << std::endl;
-          myOutputStream  << LINE_COLOR <<  "setrgbcolor" << std::endl;
-          myOutputStream  <<"0.1 setlinewidth" << std::endl;
+          myOutputStream  << LINE_COLOR <<  " setrgbcolor" << std::endl;
+          myOutputStream  << meshCntWidth<< " setlinewidth" << std::endl;
           myOutputStream << "stroke" << std::endl;
-          myOutputStream  << POINT_COLOR <<  "setrgbcolor" << std::endl;
+          myOutputStream  << POINT_COLOR <<  " setrgbcolor" << std::endl;
           for(auto const &cnt: contours)
           {
             addContourPoints(cnt);
           }
         }
+     
+        
       }else if(myExportType == SvgExport)
       {
         if(!myDisplayMesh)
         {
           myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
+          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:#"<<getHexCode(color)<<";stroke-width:"<< emptyCntWidth<<"px;";
           myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
           myOutputStream << "d=\"";
         }else
         {
           myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:0.1px;";
+          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:"<< meshCntWidth<<"px;";
           myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
           myOutputStream << "d=\"";
           
@@ -229,7 +243,7 @@ public:
     else if (myExportType==SvgExport)
     {
       myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-      myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
+      myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:#"<< getHexCode(color) <<";stroke-width:"<< emptyCntWidth << "px;";
       myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
       myOutputStream << "d=\"";
       addPathContent(contour);
