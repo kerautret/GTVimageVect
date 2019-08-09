@@ -79,65 +79,125 @@ public:
   // Used (@todo tp add SVG case)
   template<typename TContour>
   void addRegion(const TContour &contour,
-                                          const  DGtal::Color &color, double linewidth)
+                 const  DGtal::Color &color, double linewidth)
   {
-    myOutputStream << "newpath" << std::endl;
-    addPathContent(contour);
-    myOutputStream << "closepath" << std::endl;
-    if(myDisplayMesh)
-    {
-      myOutputStream << "gsave" << std::endl;
-    }
-    float r,g,b;
-    r = color.red()/255.0;
-    g = color.green()/255.0;
-    b = color.blue()/255.0;
-    myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-    myOutputStream << "fill" << std::endl;
-    if(myDisplayMesh)
-    {
-      myOutputStream << "grestore" << std::endl;
-      myOutputStream  << linewidth << " setlinewidth 0.7 0.2 0.2 setrgbcolor" << std::endl;
-      myOutputStream << "stroke" << std::endl;
-    }
-    
-  }
-  
-  // Used (@todo tp add SVG case)
-  template<typename TContour>
-  void addRegions(const std::vector<TContour> &contours, const  DGtal::Color &color)
+    if(myExportType == EpsExport)
     {
       myOutputStream << "newpath" << std::endl;
-      for(auto const &cnt: contours)
-      {
-        addPathContent(cnt);
-      }
-      myOutputStream << " closepath " << std::endl;
+      addPathContent(contour);
+      myOutputStream << "closepath" << std::endl;
       if(myDisplayMesh)
       {
         myOutputStream << "gsave" << std::endl;
       }
-      
       float r,g,b;
       r = color.red()/255.0;
-      g = color.green()/255.0;  
+      g = color.green()/255.0;
       b = color.blue()/255.0;
       myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
       myOutputStream << "fill" << std::endl;
       if(myDisplayMesh)
       {
         myOutputStream << "grestore" << std::endl;
-        myOutputStream  << LINE_COLOR <<  "setrgbcolor" << std::endl;
-        myOutputStream  <<"0.1 setlinewidth" << std::endl;
+        myOutputStream  << linewidth << " setlinewidth 0.7 0.2 0.2 setrgbcolor" << std::endl;
         myOutputStream << "stroke" << std::endl;
-        myOutputStream  << POINT_COLOR <<  "setrgbcolor" << std::endl;
+      }
+    }
+    else if(myExportType == SvgExport)
+    {
+      if(!myDisplayMesh)
+      {
+        myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
+        myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
+        myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
+        myOutputStream << "d=\"";
+      }else
+      {
+        myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
+        myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:0.2px;";
+        myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
+        myOutputStream << "d=\"";
+        
+      }
+      
+      addPathContent(contour);
+      myOutputStream << "\"\n";
+      myOutputStream << "id=\"path"<< myCurrentIdPath << "\" \n";
+      myOutputStream << "inkscape:connector-curvature=\"0\" ",
+      myOutputStream << "sodipodi:nodetypes=\"cccccccccc\" />\n";
+      myCurrentIdPath++;
+    }
+  }
+  
+  // Used (@todo tp add SVG case)
+  template<typename TContour>
+  void addRegions(const std::vector<TContour> &contours, const  DGtal::Color &color)
+    {
+      if(myExportType == EpsExport)
+      {
+        myOutputStream << "newpath" << std::endl;
         for(auto const &cnt: contours)
         {
-          addContourPoints(cnt);
-        } 
+          addPathContent(cnt);
+        }
+        myOutputStream << " closepath " << std::endl;
+        if(myDisplayMesh)
+        {
+          myOutputStream << "gsave" << std::endl;
+        }
+        
+        float r,g,b;
+        r = color.red()/255.0;
+        g = color.green()/255.0;
+        b = color.blue()/255.0;
+        myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+        myOutputStream << "fill" << std::endl;
+        if(myDisplayMesh)
+        {
+          myOutputStream << "grestore" << std::endl;
+          myOutputStream  << LINE_COLOR <<  "setrgbcolor" << std::endl;
+          myOutputStream  <<"0.1 setlinewidth" << std::endl;
+          myOutputStream << "stroke" << std::endl;
+          myOutputStream  << POINT_COLOR <<  "setrgbcolor" << std::endl;
+          for(auto const &cnt: contours)
+          {
+            addContourPoints(cnt);
+          }
+        }
+      }else if(myExportType == SvgExport)
+      {
+        if(!myDisplayMesh)
+        {
+          myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
+          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:none;stroke-width:0px;";
+          myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
+          myOutputStream << "d=\"";
+        }else
+        {
+          myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
+          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:0.1px;";
+          myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
+          myOutputStream << "d=\"";
+          
+        }
+        for(auto const &cnt: contours)
+        {
+          addPathContent(cnt);
+        }
+        myOutputStream << "\"\n";
+        myOutputStream << "id=\"path"<< myCurrentIdPath << "\" \n";
+        myOutputStream << "inkscape:connector-curvature=\"0\" ",
+        myOutputStream << "sodipodi:nodetypes=\"cccccccccc\" />\n";
+        myCurrentIdPath++;
+        if(myDisplayMesh)
+        {
+          for(auto const &cnt: contours)
+          {
+            addContourPoints(cnt);
+          }
+        }
       }
-
-
+      
     };
 
   template<typename TContour>
@@ -192,12 +252,18 @@ public:
     r = color.red()/255.0;
     g = color.green()/255.0;
     b = color.blue()/255.0;
+    if(myExportType == EpsExport)
+    {
     myOutputStream    << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
     myOutputStream    << lineWidth << " setlinewidth" << std::endl;
     myOutputStream    << pt1[0] << " " << pt1[1] << " moveto" << std::endl;
     myOutputStream    << pt2[0] << " " << pt2[1] << " lineto" << std::endl;
     myOutputStream    << "stroke" << std::endl;
-    
+    }
+    else if (myExportType==SvgExport)
+    {
+      myOutputStream << "draw line not implemented in SVG" << std::endl;
+    }
   }
   
   template<typename TPoint2D>
