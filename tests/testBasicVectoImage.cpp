@@ -65,14 +65,25 @@ int main( int argc, char** argv )
   std::vector<Z2i::RealPoint> hole = {Z2i::RealPoint(5,15), Z2i::RealPoint(15,15),
                                       Z2i::RealPoint(15,  5),Z2i::RealPoint(5,5)};
   
+  
   auto contoursHole = std::vector<std::vector<Z2i::RealPoint>>();
   contoursHole.push_back(hole);
+  
+  // test contour points
   exporter.addContourPoints(contour);
   exporterSVG.addContourPoints(contour);
   
+  // test regions with holes
   exporter.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
   exporterSVG.addRegionWithHoles(contour, contoursHole, DGtal::Color::Blue);
-  exporter.closeFigure();
+
+  // test single contours:
+  exporter.addContour(contoursHole[0], DGtal::Color::Yellow);
+  exporterSVG.addContour(contoursHole[0], DGtal::Color::Yellow);
+
+
+
+    exporter.closeFigure();
   exporterSVG.closeFigure();
 
   return 0;

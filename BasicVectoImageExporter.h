@@ -200,21 +200,39 @@ public:
     
   }
   
-  // Used (@todo tp add SVG case)
   template<typename TPoint2D>
   void addContour(const std::vector<TPoint2D> &contour,
                   const  DGtal::Color &color, double lineWidth=1.0)
   {
-    myOutputStream << "newpath" << std::endl;
-    addPathContent(contour);
-    myOutputStream << "closepath" << std::endl;
-    float r,g,b;
-    r = color.red()/255.0;
-    g = color.green()/255.0;
-    b = color.blue()/255.0;
-    myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-    
-    myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
+    if(myExportType == EpsExport)
+    {
+      myOutputStream << "newpath" << std::endl;
+      addPathContent(contour);
+      myOutputStream << "closepath" << std::endl;
+      float r,g,b;
+      r = color.red()/255.0;
+      g = color.green()/255.0;
+      b = color.blue()/255.0;
+      myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
+      
+      myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
+    }
+    else if (myExportType == SvgExport)
+    {
+      
+      myOutputStream << "<path \n style=\"stroke:#" <<  getHexCode(color);
+      myOutputStream << "; fill:none; stroke-opacity:1;stroke-width:"<< lineWidth << ";";
+      myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
+      myOutputStream << "d=\"";
+      
+      addPathContent(contour);
+      
+      myOutputStream << "\"\n";
+      myOutputStream << "id=\"path"<< myCurrentIdPath << "\" \n";
+      myOutputStream << "inkscape:connector-curvature=\"0\" ",
+      myOutputStream << "sodipodi:nodetypes=\"cccccccccc\" />\n";
+      myCurrentIdPath++;
+    }
   }
 
   // Not yet used (@todo later add SVG case)
@@ -279,7 +297,6 @@ public:
   
 
   
-  // Not yet used (@todo later add SVG case)
   template<typename TContour>
   void addContourPoints(const TContour &contour,  const  DGtal::Color &color=DGtal::Color::Red, double radius=2.0)
   {
