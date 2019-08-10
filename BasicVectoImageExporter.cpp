@@ -1,11 +1,5 @@
 #include "BasicVectoImageExporter.h"
-
 #include <sstream> 
-
-
-
-
-
 
 
 BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
@@ -14,107 +8,56 @@ BasicVectoImageExporter::BasicVectoImageExporter(const std::string &imageName,
 {
   myWidth=width;
   myHeight=height;
+  std::string ext = imageName.substr( imageName.find_last_of(".") + 1 );
+  myExportType = (ext == "svg" || ext == "SVG")? ExportType::SvgExport :
+                 (ext == "eps" || ext == "EPS")? ExportType::EpsExport: UnknowExport;
   myOutputStream.open(imageName, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
-  fillEPSHeader();
+  fillHeader();
   myDisplayMesh = displayMesh;
   LINE_COLOR  = " 0.8 0.1 0.1 ";
   POINT_COLOR = " 0.1 0.1 0.8 ";
 }
 
-
-
-
-
-void BasicVectoImageExporter::drawLine(const Point2D &pt1, const Point2D &pt2,  const  DGtal::Color &color, double lineWidth)
-{
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream    << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  myOutputStream    << lineWidth << " setlinewidth" << std::endl; 
-  myOutputStream    << pt1[0] << " " << pt1[1] << " moveto" << std::endl;
-  myOutputStream    << pt2[0] << " " << pt2[1] << " lineto" << std::endl;
-  myOutputStream    << "stroke" << std::endl;
-      
+std::string BasicVectoImageExporter::getHexCode(const DGtal::Color &c){
+  std::stringstream ss;
+  ss << std::setfill('0') << std::setw(2) << std::hex << (int)(c.red())
+  << std::setfill('0') << std::setw(2) << std::hex << (int)(c.green())
+  << std::setfill('0') << std::setw(2) << std::hex << (int)(c.blue());
+  return ss.str();
 }
 
 
-void BasicVectoImageExporter::addContour(const std::vector<BasicVectoImageExporter::Point2D> &contour,
-                                         const  DGtal::Color &color, double lineWidth)
-{
-  myOutputStream << "newpath" << std::endl;
-  addPathContent(contour);
-  myOutputStream << "closepath" << std::endl;
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  
-  myOutputStream << lineWidth <<"  setlinewidth stroke" << std::endl;
-  
-  
+std::string BasicVectoImageExporter::getExportType(){
+  switch (myExportType) {
+    case EpsExport:
+      return "eps";
+      break;
+    case SvgExport:
+      return "svg";
+      break;
+    default:
+      break;
+  }
+  return "unknow";
 }
 
 
 
 
-void BasicVectoImageExporter::addRegion(const std::vector<BasicVectoImageExporter::Point2D> &contour,
-                                        const  DGtal::Color &color, double linewidth)
+void BasicVectoImageExporter::fillHeader()
 {
-  myOutputStream << "newpath" << std::endl;
-  addPathContent(contour);
-  myOutputStream << "closepath" << std::endl;
-  if(myDisplayMesh)
-    {
-      myOutputStream << "gsave" << std::endl;
-    }
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  myOutputStream << "fill" << std::endl;
-  if(myDisplayMesh)
-    {
-      myOutputStream << "grestore" << std::endl;
-      myOutputStream  << linewidth << " setlinewidth 0.7 0.2 0.2 setrgbcolor" << std::endl;
-      myOutputStream << "stroke" << std::endl;
-    }
-  
+  switch (myExportType) {
+    case EpsExport:
+      fillEPSHeader();
+      break;
+    case SvgExport:
+      fillSVGHeader();
+      break;
+    default:
+      DGtal::trace.warning() << "Header will be empty (unknow export type), change your extension file" << std::endl;
+      break;
+  }
 }
-
-
-
-
-void BasicVectoImageExporter::addRegionWithHoles(const std::vector<BasicVectoImageExporter::Point2D> &contour,
-                        const std::vector<BasicVectoImageExporter::Contour2D> &listHoles,
-                        const DGtal::Color &color )
-{
-  myOutputStream << "newpath" << std::endl;
-  addPathContent(contour);
-  for(auto const &hole: listHoles)
-    {
-      addPathContent(hole);
-    }
-  myOutputStream << "closepath" << std::endl;
-  float r,g,b;
-  r = color.red()/255.0;
-  g = color.green()/255.0;  
-  b = color.blue()/255.0;
-  myOutputStream  << r << " " << g << " " << b <<  " setrgbcolor" << std::endl;
-  myOutputStream << "fill" << std::endl;
-}
-
-
-
-
-
-
-
-
-
 
 
 void BasicVectoImageExporter::fillEPSHeader()
@@ -134,12 +77,65 @@ void BasicVectoImageExporter::fillEPSHeader()
 void BasicVectoImageExporter::fillSVGHeader()
   {
     
-    myOutputStream << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>"
-                   << "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \n"
-                   << "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"
-                   <<" <svg width=\"100mm\" height=\"100mm\" \n viewBox=\"0 0 " << myWidth << " " << myHeight << "\""
-                   << " xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" >"
-                   << "<desc>output.svg, created with DGtalTools</desc>" << std::endl;
+    myOutputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << std::endl;
+    myOutputStream << "<!-- Created BasicImageExporter --> " << std::endl;
+    myOutputStream << " " << std::endl;
+    myOutputStream << "<svg" << std::endl;
+    myOutputStream << "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"" << std::endl;
+    myOutputStream << "xmlns:cc=\"http://creativecommons.org/ns#\"" << std::endl;
+    myOutputStream << "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" << std::endl;
+    myOutputStream << "xmlns:svg=\"http://www.w3.org/2000/svg\"" << std::endl;
+    myOutputStream << "xmlns=\"http://www.w3.org/2000/svg\""<< std::endl;
+    myOutputStream << "xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""<< std::endl;
+    myOutputStream << "xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"" << std::endl;
+    myOutputStream << "width=\""<<myWidth<<"mm\""<< std::endl;
+    myOutputStream << "height=\""<<myHeight<<"mm\""<< std::endl;
+    myOutputStream << "viewBox=\"0 0 "<<myWidth<< " " << myHeight<< "\"" << std::endl;
+    myOutputStream << "version=\"1.1\"" << std::endl;
+    myOutputStream << "id=\"svg3\"" << std::endl;
+    myOutputStream << "sodipodi:docname=\"" << myImageName<<"\""<< std::endl;
+    myOutputStream << "inkscape:version=\"0.92.2 5c3e80d, 2017-08-06\">" << std::endl;
+    myOutputStream << "<metadata " << std::endl;
+    myOutputStream << "id=\"metadata9\"> " << std::endl;
+    myOutputStream << "<rdf:RDF> " << std::endl;
+    myOutputStream << "<cc:Work " << std::endl;
+    myOutputStream << "rdf:about=\"\"> " << std::endl;
+    myOutputStream << "<dc:format>image/svg+xml</dc:format> " << std::endl;
+    myOutputStream << "<dc:type " << std::endl;
+    myOutputStream << "rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" /> " << std::endl;
+    myOutputStream << "<dc:title></dc:title> " << std::endl;
+    myOutputStream << "</cc:Work> " << std::endl;
+    myOutputStream << "</rdf:RDF> " << std::endl;
+    myOutputStream << "</metadata> " << std::endl;
+    myOutputStream << "<defs " << std::endl;
+    myOutputStream << "id=\"defs7\" /> " << std::endl;
+    myOutputStream << "<sodipodi:namedview" << std::endl;
+    myOutputStream << "pagecolor=\"#ffffff\" " << std::endl;
+    myOutputStream << "bordercolor=\"#666666\"" << std::endl;
+    myOutputStream << "borderopacity=\"1\"" << std::endl;
+    myOutputStream << "objecttolerance=\"10\"" << std::endl;
+    myOutputStream << "gridtolerance=\"10\" " << std::endl;
+    myOutputStream << "guidetolerance=\"10\"" << std::endl;
+    myOutputStream << "inkscape:pageopacity=\"0\"" << std::endl;
+    myOutputStream << "inkscape:pageshadow=\"2\" " << std::endl;
+    myOutputStream << "inkscape:window-width=\"1250\" " << std::endl;
+    myOutputStream << "inkscape:window-height=\"735\"" << std::endl;
+    myOutputStream << "id=\"namedview5\" " << std::endl;
+    myOutputStream << "showgrid=\"false\" " << std::endl;
+    myOutputStream << "inkscape:zoom=\""<<myScale<< "\"" << std::endl;
+    myOutputStream << "inkscape:cx=\""<< myWidth << "\" " << std::endl;
+    myOutputStream << "inkscape:cy=\""<< myHeight<< "\" " << std::endl;
+    myOutputStream << "inkscape:window-x=\"0\" " << std::endl;
+    myOutputStream << "inkscape:window-y=\"0\"" << std::endl;
+    myOutputStream << "inkscape:window-maximized=\"0\"" << std::endl;
+    myOutputStream << "inkscape:current-layer=\"svg3\" />" << std::endl;
+
+}
+
+void BasicVectoImageExporter::closeFigure(){
+  if(myExportType == SvgExport)
+  {
+    myOutputStream << "</svg>"<< std::endl;
   }
-
-
+  
+}

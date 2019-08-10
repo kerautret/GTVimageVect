@@ -3,10 +3,13 @@ SET(GTVV_TESTS
 )
 
 
+SET(SOURCE_TESTS_HEADER_FILES
+   ${PROJECT_SOURCE_DIR}/BasicVectoImageExporter.h
+)
 
 
 FOREACH(FILE ${GTVV_TESTS})
-  add_executable(${FILE} ${FILE} ${SRC_COMP})
+  add_executable(${FILE} ${FILE} ${SRC_COMP} ${SOURCE_TESTS_HEADER_FILES})
   target_link_libraries( ${FILE}  ${CAIRO_LIBRAIRIES} ${DGTAL_LIBRARIES} ${GTVDep}  )
 ENDFOREACH(FILE)
 
