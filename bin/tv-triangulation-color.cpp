@@ -3135,7 +3135,7 @@ int main( int argc, char** argv )
     ("exportVectMesh,e", po::value<std::vector<std::string> >()->multitoken(), "Export the triangle mesh." )
     ("exportVectMeshDual,E", po::value<std::vector<std::string> >()->multitoken(), "Export the triangle mesh." )
     ("exportVectContoursDual,C", po::value<std::vector<std::string> >()->multitoken(), "Export the image regions filled." )
-    ("epsScale", po::value<double>()->default_value( 1.0 ), "Change the default eps scale to increase display size on small images (using 10 will display easely small images while 1.0 is more adapted to bigger images) . " )
+    ("vectScale", po::value<double>(), "Change the default vectorial scale to ajust default display size. By default the scale is given from the Rasterization magnification factor (--bitmap,b option) (using 10 will display easely small images while 1.0 is more adapted to bigger images)." )
     ("numColorExportVectDual", po::value<unsigned int>()->default_value(0), "num of the color of the map." )
     ("regularizeContour,R", po::value<int>()->default_value( 20 ), "regularizes the dual contours for <nb> iterations." )
     ("zip,z", po::value<double>()->default_value( 1.0 ), "Compresses the triangulation to keep only the given proportion of vertices." )
@@ -3241,7 +3241,12 @@ int main( int argc, char** argv )
   TVTriangulation TVT( image, color, p, sim, conn_s, debug );
   trace.info() << TVT.T << std::endl;
   trace.endBlock();
-  
+  // by default we take the scale of the scale factor of the zoom image.
+  double scaleVisuVect = vm["bitmap"].as<double>();
+  if (vm.count("vectScale"))
+  {
+    scaleVisuVect = vm["vectScale"].as<double>();
+  }
   trace.beginBlock("Output TV image (possibly quantified)");
   Image J( image.domain() );
   bool ok = TVT.outputU( J );
@@ -3409,9 +3414,9 @@ int main( int argc, char** argv )
       unsigned int h = image.extent()[ 1 ];
       std::string pname = "zip-primal.eps";
       // std::string dname = "zip-dual.eps";
-      double epsScale = vm["epsScale"].as<double>();
-      exportVectMesh(TVTzip, pname, w, h , true, epsScale);
-      //      exportVectMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
+   
+      exportVectMesh(TVTzip, pname, w, h , true, scaleVisuVect);
+      //      exportVectMeshDual(TVTzip, dname, w, h , true, 0, scaleVisuVect);
     }
   trace.endBlock();
   }//  else if ( z_method == "Laplacian" ) {
@@ -3461,9 +3466,9 @@ int main( int argc, char** argv )
   //       unsigned int h = image.extent()[ 1 ];
   //       std::string pname = "zip-primal.eps";
   //       // std::string dname = "zip-dual.eps";
-  //       double epsScale = vm["epsScale"].as<double>();
-  //       exportVectMesh(TVTzip, pname, w, h , true, epsScale);
-  //       //      exportVectMeshDual(TVTzip, dname, w, h , true, 0, epsScale);
+  //       double vectScale = vm["vectScale"].as<double>();
+  //       exportVectMesh(TVTzip, pname, w, h , true, vectScale);
+  //       //      exportVectMeshDual(TVTzip, dname, w, h , true, 0, vectScale);
   //     }
   //   }
   //   trace.endBlock();
@@ -3473,13 +3478,12 @@ int main( int argc, char** argv )
   
   trace.beginBlock("Export base triangulation");
 
-  double epsScale = vm["epsScale"].as<double>();
   if(vm.count("exportVectMesh"))
     {
       unsigned int w = image.extent()[ 0 ];
       unsigned int h = image.extent()[ 1 ];
       for (auto name: vm["exportVectMesh"].as<std::vector<string>>()){
-        exportVectMesh(TVT, name, w, h ,vm.count("displayMesh"), epsScale);
+        exportVectMesh(TVT, name, w, h ,vm.count("displayMesh"), scaleVisuVect);
       }
     }
   if(vm.count("exportVectMeshDual"))
@@ -3489,7 +3493,7 @@ int main( int argc, char** argv )
       for (auto name: vm["exportVectMeshDual"].as<std::vector<std::string>>())
       {
         unsigned int numColor = vm["numColorExportVectDual"].as<unsigned int>();
-        exportVectMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, epsScale);
+        exportVectMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, scaleVisuVect);
       }
     }
   if(vm.count("exportVectContoursDual"))
@@ -3497,7 +3501,7 @@ int main( int argc, char** argv )
     unsigned int w = image.extent()[ 0 ];
     unsigned int h = image.extent()[ 1 ];
     auto lname = vm["exportVectContoursDual"].as<std::vector<std::string>>();
-    exportVectContoursDual(TVT, lname, w, h, epsScale);
+    exportVectContoursDual(TVT, lname, w, h, scaleVisuVect);
   }
   trace.endBlock();
   timeExport = c.stopClock();
