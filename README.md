@@ -50,7 +50,19 @@ The installation of the code can be done by following these steps:
  <tr> <td> source image (<a href="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png">.png</a>)</td> <td>result (scaled bitmap <a href="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png">.png</a>)</td><td>result (vectorial format <a href="tests/ex_results/result.svg">.svg</a>)</td> </tr>
 </table>
                                            
-
+The vectorial representation allows you to edit easely the shape by using for instance <a href="https://inkscape.org">inskape</a>:
+<table>
+ <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
+  <td><img  src="tests/ex_results/skeleton.svg"/></td>
+  <td><img  src="tests/ex_results/skeletonEdic.svg"/></td>
+</tr>
+<tr>
+ <td>source</td> 
+ <td>result (svg)</td>
+ <td>edited using <a href="https://inkscape.org">inskape</a></td>
+</tr>
+ </table>
+ 
 
 ## Reproduction of Paper Figures
 All the figures of the paper using the present algorihtms can be reproduced from the following script `script-figures.sh`.
