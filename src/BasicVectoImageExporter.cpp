@@ -88,8 +88,8 @@ void BasicVectoImageExporter::fillSVGHeader()
     myOutputStream << "xmlns=\"http://www.w3.org/2000/svg\""<< std::endl;
     myOutputStream << "xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""<< std::endl;
     myOutputStream << "xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"" << std::endl;
-    myOutputStream << "width=\""<<myWidth<<"mm\""<< std::endl;
-    myOutputStream << "height=\""<<myHeight<<"mm\""<< std::endl;
+    myOutputStream << "width=\""<<myWidth*myScale<<"px\""<< std::endl;
+    myOutputStream << "height=\""<<myHeight*myScale<<"px\""<< std::endl;
     myOutputStream << "viewBox=\"0 0 "<<myWidth<< " " << myHeight<< "\"" << std::endl;
     myOutputStream << "version=\"1.1\"" << std::endl;
     myOutputStream << "id=\"svg3\"" << std::endl;
@@ -122,11 +122,11 @@ void BasicVectoImageExporter::fillSVGHeader()
     myOutputStream << "inkscape:window-height=\"735\"" << std::endl;
     myOutputStream << "id=\"namedview5\" " << std::endl;
     myOutputStream << "showgrid=\"false\" " << std::endl;
-    myOutputStream << "inkscape:zoom=\""<<myScale<< "\"" << std::endl;
-    myOutputStream << "inkscape:cx=\""<< myWidth << "\" " << std::endl;
-    myOutputStream << "inkscape:cy=\""<< myHeight<< "\" " << std::endl;
-    myOutputStream << "inkscape:window-x=\"0\" " << std::endl;
-    myOutputStream << "inkscape:window-y=\"0\"" << std::endl;
+    myOutputStream << "inkscape:zoom=\""<<1.0<< "\"" << std::endl;
+    myOutputStream << "inkscape:cx=\""<< myScale*myWidth/2.0 << "\" " << std::endl;
+    myOutputStream << "inkscape:cy=\""<< myScale*myHeight/2.0 << "\" " << std::endl;
+    myOutputStream << "inkscape:window-x=\""<<0 <<"\" " << std::endl;
+    myOutputStream << "inkscape:window-y=\""<<0 << "\"" << std::endl;
     myOutputStream << "inkscape:window-maximized=\"0\"" << std::endl;
     myOutputStream << "inkscape:current-layer=\"svg3\" />" << std::endl;
 

@@ -4,7 +4,7 @@ SET(GTVV_TESTS
 
 
 SET(SOURCE_TESTS_HEADER_FILES
-   ${PROJECT_SOURCE_DIR}/BasicVectoImageExporter.h
+   ${PROJECT_SOURCE_DIR}/src/BasicVectoImageExporter.h
 )
 
 
