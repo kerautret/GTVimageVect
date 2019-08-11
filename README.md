@@ -47,7 +47,7 @@ The installation of the code is then:
     <td>
      <img width="300" src="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png"></td><td><img width="300" src="tests/ex_results/result.svg"></td>
     </tr>
- <tr> <td> source (<a href="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png">.png</a>)</td> <td>result (<a href="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png">scaled bitmap .png</a>))</td><td><a href="tests/ex_results/result.svg">result.svg (vectorial format)</a></td> </tr>
+ <tr> <td> source image (<a href="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png">.png</a>)</td> <td>result (scaled bitmap <a href="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png">.png</a>))</td><td>result (vectorial format <a href="tests/ex_results/result.svg">.svg</a>)</td> </tr>
 </table>
                                            
 
