@@ -4,7 +4,7 @@ project( GTVimageVect )
 
 
 cmake_minimum_required (VERSION 2.6) 
-include_directories ("${PROJECT_SOURCE_DIR}/")
+include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 macro(use_cxx11)
   if (CMAKE_VERSION VERSION_LESS "3.1")
@@ -91,33 +91,23 @@ if ( Boost_FOUND )
    SET(GTVLinInc ${Boost_INCLUDE_DIRS})
 endif( Boost_FOUND )
 
-SET(SRCs
-  tv-triangulation-color
-)
-
 SET(SRC_COMP
- ${PROJECT_SOURCE_DIR}/BasicVectoImageExporter.cpp  
+ ${PROJECT_SOURCE_DIR}/src/BasicVectoImageExporter.cpp  
 )
 
 SET(SOURCE_HEADER_FILES
-  ${PROJECT_SOURCE_DIR}/BezierCurve.h
-   ${PROJECT_SOURCE_DIR}/BasicVectoImageExporter.h
-   ${PROJECT_SOURCE_DIR}/BezierTriangle2.h
-   ${PROJECT_SOURCE_DIR}/BreadthFirstVisitorWithParent.h
-   ${PROJECT_SOURCE_DIR}/BreadthFirstVisitorWithParent.ih
-   ${PROJECT_SOURCE_DIR}/CairoViewer.h
-   ${PROJECT_SOURCE_DIR}/ImageConnecter.h
-   ${PROJECT_SOURCE_DIR}/ImageTVRegularization.h
-   ${PROJECT_SOURCE_DIR}/ImageTriangulation.h
+  ${PROJECT_SOURCE_DIR}/src/BezierCurve.h
+   ${PROJECT_SOURCE_DIR}/src/BasicVectoImageExporter.h
+   ${PROJECT_SOURCE_DIR}/src/BezierTriangle2.h
+   ${PROJECT_SOURCE_DIR}/src/BreadthFirstVisitorWithParent.h
+   ${PROJECT_SOURCE_DIR}/src/BreadthFirstVisitorWithParent.ih
+   ${PROJECT_SOURCE_DIR}/src/CairoViewer.h
+   ${PROJECT_SOURCE_DIR}/src/ImageConnecter.h
+   ${PROJECT_SOURCE_DIR}/src/ImageTVRegularization.h
+   ${PROJECT_SOURCE_DIR}/src/ImageTriangulation.h
 )
 
-  
-FOREACH(FILE ${SRCs})
-  add_executable(${FILE} ${FILE} ${SRC_COMP} ${SOURCE_HEADER_FILES})
-  target_link_libraries( ${FILE}  ${CAIRO_LIBRAIRIES} ${DGTAL_LIBRARIES} ${GTVDep} )
-ENDFOREACH(FILE)
 
 
-
-
+add_subdirectory(bin)
 add_subdirectory(tests)
