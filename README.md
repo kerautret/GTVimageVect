@@ -54,7 +54,7 @@ The vectorial representation allows you to edit easely the shape by using for in
 <table>
  <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
-  <td><img  src="tests/ex_results/skeletonEdic.svg"/></td>
+  <td><img  src="tests/ex_results/skeletonEdit.svg"/></td>
 </tr>
 <tr>
  <td>source</td> 
