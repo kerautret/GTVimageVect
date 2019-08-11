@@ -6,7 +6,7 @@
 # Laboratoire d'InfoRmatique en Image et Systèmes d'information - LIRIS (CNRS, UMR 5205), CNRS, France
 
 # Define the path to the program
-EXEC=build/tv-triangulation-color
+EXEC=build/bin/tv-triangulation-color
 
 # Choose your zoom factor
 ZOOM=16
@@ -88,5 +88,5 @@ for i in ${IMAGES}; do
 done
 
 # Cleaning stuff
-rm tmp.log tmp.err output-laplacian-after.pgm output-laplacian-before.pgm output-tv.ppm
+rm tmp.log tmp.err output-laplacian-before.pgm output-tv.ppm
 
