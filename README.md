@@ -37,9 +37,9 @@ The installation of the code can be done by following these steps:
      - `make`
      
 ## Typical Use
-   The algorithm is run from executable `tv-triangulation-color`. For instance, you can use it follows from the `build/bin` directory:
+   The algorithm is run from executable `tv-triangulation-color`. For instance, you can use as follows (from the project directory):
    
-   `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.svg`
+   `./build/bin/tv-triangulation-color -i Input/dolphin.ppm -b 16 -D 16 -o output -C result.svg`
    
    Then you should obtain:
     <table>
@@ -50,7 +50,11 @@ The installation of the code can be done by following these steps:
  <tr> <td> source image (<a href="https://user-images.githubusercontent.com/772865/62563570-931eb300-b883-11e9-8ee6-c6054d60040a.png">.png</a>)</td> <td>result (scaled bitmap <a href="https://user-images.githubusercontent.com/772865/62563720-e85ac480-b883-11e9-982c-01e3dedc316b.png">.png</a>)</td><td>result (vectorial format <a href="tests/ex_results/result.svg">.svg</a>)</td> </tr>
 </table>
                                            
-The vectorial representation allows you to edit easely the shape by using for instance <a href="https://inkscape.org">inskape</a>:
+The vectorial representation allows you to edit easely the shape by using for instance <a href="https://inkscape.org">inskape</a>. First you can generate the vectorial representation:
+ 
+` ./build/bin/tv-triangulation-color -i tests/ex_results/skeleton.ppm -b 16 -D 16 -C skeleton.svg`
+
+Then after edition you can obtain for instance the representation belwo on right image:
 <table>
  <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
