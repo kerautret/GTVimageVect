@@ -37,7 +37,7 @@ The installation of the code can be done by following these steps:
      - `make`
      
 ## Typical Use
-   The algorithm is run from executable `tv-triangulation-color`. For instance, you can use it follows from the `bin/build` directory:
+   The algorithm is run from executable `tv-triangulation-color`. For instance, you can use it follows from the `build/bin` directory:
    
    `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.svg`
    
