@@ -27,19 +27,19 @@ To use this source code, you need to install the following dependencies:
    - **boost programm options** by default the application use the package `libboost-program-options-dev`. You can use you default package manager to install it.
 
 
-The installation of the code is then:
-   - From the git command:
+The installation of the code can be done by following these steps:
+   - Download the source for instance by using the `git` command:
      - `git clone git@github.com:kerautret/GTVimageVect.git`
      - `cd GTVimageVect; mkdir build; cd build;`
 
-     Then you start to build the code: (you can remove the DGtal path if you make a global installation of DGtal.
+   - Then, you can start to build the code: (you can remove the DGtal path if you make a global installation of DGtal).
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
      
 ## Typical Use
-   The algorithm is run from executable `tv-triangulation-color`. For instance you can use it follows from the build directory:
+   The algorithm is run from executable `tv-triangulation-color`. For instance, you can use it follows from the `bin/build` directory:
    
-   `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.eps`
+   `tv-triangulation-color -i ../Input/dolphin.ppm -b 16 -D 16 -o output -C result.svg`
    
    Then you should obtain:
     <table>
