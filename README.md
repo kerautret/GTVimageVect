@@ -64,7 +64,7 @@ Then, thanks to the vectorial representation, you can animate the resulting vect
 <tr>
  <td>source (scaled)</td> 
  <td>result (svg)</td>
- <td> Edited using <a href="https://inkscape.org">inskape</a> and animated from svg format.</td>
+ <td> Edited using <a href="https://inkscape.org">inskape</a> and animated with svg format (reload or click to see animation).</td>
 </tr>
  </table>
  
