@@ -11,7 +11,7 @@
 class BasicVectoImageExporter{
   std::string LINE_COLOR;// = " 0.8 0.1 0.1 ";
   std::string POINT_COLOR;// = " 0.1 0.1 0.8 ";
-  const float emptyCntWidth = 0.01;
+  const float emptyCntWidth = 0.1; // used in % (larger for better inskape rendering)
   const float meshCntWidth = 0.1;
 
   typedef enum {EpsExport, SvgExport, UnknowExport} ExportType;
@@ -187,13 +187,13 @@ public:
         if(!myDisplayMesh)
         {
           myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:#"<<getHexCode(color)<<";stroke-width:"<< emptyCntWidth<<"px;";
+          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:#"<<getHexCode(color)<<";stroke-width:"<< emptyCntWidth<<";";
           myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
           myOutputStream << "d=\"";
         }else
         {
           myOutputStream << "<path \n style=\"fill:#" <<  getHexCode(color);
-          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:"<< meshCntWidth<<"px;";
+          myOutputStream << "; fill-opacity:1,fill-rule:evenodd;stroke:red;stroke-width:"<< meshCntWidth<<";";
           myOutputStream << "stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\""<<std::endl;
           myOutputStream << "d=\"";
           

@@ -54,7 +54,7 @@ The vectorial representation allows you to edit easely the shape by using for in
  
 ` ./build/bin/tv-triangulation-color -i tests/ex_results/skeleton.ppm -b 16 -D 16 -C skeleton.svg`
 
-Then after edition you can obtain for instance the representation belwo on right image:
+Then, thanks to the vectorial representation, you can animate the resulting vectorial file like in the animation below on the right:
 <table>
  <tr><td><img  src="tests/ex_results/skeletonSrcScaled.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
