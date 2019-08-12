@@ -59,7 +59,7 @@ Then after edition you can obtain for instance the representation belwo on right
  <tr><td><img  src="tests/ex_results/skeletonSrcScaled.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
 <td>
-<img src="https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnime.svg"></td>
+<img src="https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnim.svg"></td>
 </tr>
 <tr>
  <td>source (scaled)</td> 
@@ -73,15 +73,18 @@ The algorithm can be used to zoom on part of photography:
 
 
 `./build/bin/tv-triangulation-color -i Input/ara.ppm -b 16 -D 16 -output resultAra`
+`convert -scale 1600% Input/ara.ppm ara16x.png`
 
 You should obtain such resulting images:
 
 <table>
-<tr></tr>
-<td> </td>
-<td> </td>
-<td> </td>
-
+<tr>
+<td><img width="30%" src="tests/ex_results/ara16x.png"></td>
+<td><img width="30%" src="tests/ex_results/output-2nd.png"></td>
+</tr><tr>
+<td>Source scaled x16 </td>
+<td>Resulting image </td>
+</tr>
 </table>
 
 
