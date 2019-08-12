@@ -37,6 +37,7 @@
 #include "FourierPoisson.h"
 #include "cairo.h"
 
+static const std::string version = "0.1.1";
 
 ///////////////////////////////////////////////////////////////////////////////
 double randomUniform()
@@ -3140,6 +3141,7 @@ int main( int argc, char** argv )
     ("regularizeContour,R", po::value<int>()->default_value( 20 ), "regularizes the dual contours for <nb> iterations." )
     ("zip,z", po::value<double>()->default_value( 1.0 ), "Compresses the triangulation to keep only the given proportion of vertices." )
     ("zip-method,Z", po::value<std::string>()->default_value( "Laplacian" ), "zip method in Laplacian | Merge." )
+    ("version", "Display the version number.")
     // ("nb-zip-geometry,Z", po::value<int>()->default_value( 100 ), "Maximum number of iterations to optimize the TV geometry of the zipped triangulation." )
     ;
   
@@ -3161,8 +3163,12 @@ int main( int argc, char** argv )
       return 0;
     }
 
-  // Useful types
+  if (vm.count("version"))
+  {
+    std::cout << "Using " << argv[0] << " version " << version << std::endl;
+  }
 
+  // Useful types
   using namespace std;
   using namespace DGtal;
 
@@ -3189,7 +3195,9 @@ int main( int argc, char** argv )
   double     tol = vm[ "tolerance" ].as<double>();
   int          N = vm[ "tv-max-iter" ].as<int>();
   int      quant = vm[ "quantify" ].as<int>();
-  //  if ( lambda > 0.0 ) {
+  
+  
+  
   double timeTV, timeTriangulation, timeDisplayTriangulation,
     timeOptimisationTr, timeRegulContours, timeExport = 0.0;
   c.startClock();
