@@ -1429,13 +1429,13 @@
         animation-name: sabreScale;
         animation-duration: 1s;
         animation-iteration-count: 55; 
-        animation-play-state: paused;
+        animation-play-state: running;
     }
     .bouclier{
         animation-name: bouclierMove;
         animation-duration: 1s;
         animation-iteration-count: 55; 
-        animation-play-state: paused;
+        animation-play-state: running;
         }
 
    
@@ -1443,13 +1443,13 @@
         animation-name: teteScale;
         animation-duration: 1.1s;
         animation-iteration-count: 55; 
-        animation-play-state: paused;
+        animation-play-state: running;
     }
     .allOther{
         animation-name: smallOtherScale;
         animation-duration: 0.8s;
         animation-iteration-count: 55; 
-        animation-play-state: paused;
+        animation-play-state: running;
     }
 
     .cuisse{
@@ -1457,27 +1457,27 @@
         animation-duration: 1.1s;
         animation-iteration-count: 55; 
         transform-origin: 50% 50%;
-        animation-play-state: paused;
+        animation-play-state: running;
 
     }
     .tibia{
         animation-name: teteScale;
         animation-duration: 1.1s;
         animation-iteration-count: 55; 
-        animation-play-state: paused;
+        animation-play-state: running;
     }
     .jambe{
         animation-name: jambeRotate;
         animation-duration: 1.1s;
         animation-iteration-count: 55; 
         transform-origin: 50% 50%;
-        animation-play-state: paused;
+        animation-play-state: running;
     }
     .pied {
         animation-name: piedMove;
         animation-duration: 1.2s;
         animation-iteration-count: 55; 
-             animation-play-state: paused;
+             animation-play-state: running;
         }
      @keyframes bouclierMove {
         0% { transform: rotate(0deg );translate(100, 2000);         }
