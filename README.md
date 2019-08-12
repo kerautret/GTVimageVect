@@ -59,7 +59,6 @@ Then after edition you can obtain for instance the representation belwo on right
  <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
 <td>
-![Alt text](https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnime.svg)
 <img src="https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnime.svg"></td>
 </tr>
 <tr>
