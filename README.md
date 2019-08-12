@@ -58,9 +58,9 @@ Then after edition you can obtain for instance the representation belwo on right
 <table>
  <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
-
-![Alt text](tests/ex_results/skeleton.svg)
-<img src="tests/ex_results/skeleton.svg">
+<td>
+![Alt text](tests/ex_results/skeletonAnim.svg)
+<img src="tests/ex_results/skeletonAnim.svg"></td>
 </tr>
 <tr>
  <td>source</td> 
