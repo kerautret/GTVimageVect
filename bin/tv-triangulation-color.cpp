@@ -3164,8 +3164,11 @@ int main( int argc, char** argv )
     }
 
   if (vm.count("version"))
-  {
+  {             
+    std::cout << "--------------------------------------------" << version << std::endl;
     std::cout << "Using " << argv[0] << " version " << version << std::endl;
+    std::cout << "--------------------------------------------" << version << std::endl;
+
   }
 
   // Useful types
