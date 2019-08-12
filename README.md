@@ -73,6 +73,7 @@ The algorithm can be used to zoom on part of photography:
 
 
 `./build/bin/tv-triangulation-color -i Input/ara.ppm -b 16 -D 16 -o resultAra`
+
 `convert -scale 1600% Input/ara.ppm ara16x.png`
 
 You should obtain such resulting images:
