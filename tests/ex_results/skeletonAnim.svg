@@ -89,6 +89,12 @@
      inkscape:window-y="3"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg3" />
+<g id="button" >
+  <a xlink:href="window.location.href=window.location.href"> Reload..   </a>
+
+</g>
+
+
   <path
      style="fill:url(#linearGradient1738);fill-opacity:1;stroke:#5a636d;stroke-width:0.01px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="m -0.059878,0.0455526 h 44 V 57.045553 h -44 z"
@@ -1404,61 +1410,74 @@
        style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.01px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   </g>
   <style
-     id="style271">
+      id="style271">
+
     .mouse { fill: #E5E4E3; }
     .tulip { fill: #CC2954; }
+    svg:hover .pied,
+    svg:hover .jambe,
+    svg:hover .tibia,
+    svg:hover .allOther,
+    svg:hover .cuisse,
+    svg:hover .bras-sabre,    
+    svg:hover .tete,
+    svg:hover .bouclier {
+      animation-play-state: running;
+    }
+
     .bras-sabre{
         animation-name: sabreScale;
         animation-duration: 1s;
-        animation-iteration-count: 10;
-
+        animation-iteration-count: infinite;
+        animation-play-state: paused;
     }
     .bouclier{
         animation-name: bouclierMove;
         animation-duration: 1s;
-        animation-iteration-count: 10;
+        animation-iteration-count: infinite;
+        animation-play-state: paused;
+        }
 
-
-    }
+   
     .tete{
         animation-name: teteScale;
         animation-duration: 1.1s;
-        animation-iteration-count: 10;
-
+        animation-iteration-count: infinite;
+        animation-play-state: paused;
     }
     .allOther{
         animation-name: smallOtherScale;
         animation-duration: 0.8s;
-        animation-iteration-count: 10;
-
+        animation-iteration-count: infinite;
+        animation-play-state: paused;
     }
 
     .cuisse{
         animation-name: cuisseRotate;
         animation-duration: 1.1s;
-        animation-iteration-count: 10;
+        animation-iteration-count: infinite;
         transform-origin: 50% 50%;
-
+        animation-play-state: paused;
 
     }
     .tibia{
         animation-name: teteScale;
         animation-duration: 1.1s;
-        animation-iteration-count: 10;
-
+        animation-iteration-count: infinite;
+        animation-play-state: paused;
     }
     .jambe{
         animation-name: jambeRotate;
         animation-duration: 1.1s;
-        animation-iteration-count: 10;
+        animation-iteration-count: infinite;
         transform-origin: 50% 50%;
-
+        animation-play-state: paused;
     }
     .pied {
         animation-name: piedMove;
         animation-duration: 1.2s;
-        animation-iteration-count: 10;
-     
+        animation-iteration-count: infinite;
+             animation-play-state: paused;
         }
      @keyframes bouclierMove {
         0% { transform: rotate(0deg );translate(100, 2000);         }
@@ -1503,4 +1522,4 @@
         
         
     </style>
-</svg>
+  </svg>
