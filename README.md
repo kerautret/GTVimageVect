@@ -58,15 +58,34 @@ Then after edition you can obtain for instance the representation belwo on right
 <table>
  <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
-  <td><img  src="tests/ex_results/skeletonEdit.svg"/></td>
+
+![Alt text](tests/ex_results/skeleton.svg)
+<img src="tests/ex_results/skeleton.svg">
 </tr>
 <tr>
  <td>source</td> 
  <td>result (svg)</td>
- <td>edited using <a href="https://inkscape.org">inskape</a></td>
+ <td> Edited using <a href="https://inkscape.org">inskape</a> and animated from svg format</td>
 </tr>
  </table>
  
+
+The algorithm can be used to zoom on part of photography:
+
+
+`./build/bin/tv-triangulation-color -i Input/ara.ppm -b 16 -D 16 -output resultAra`
+
+You should obtain such resulting images:
+
+<table>
+<tr></tr>
+<td> </td>
+<td> </td>
+<td> </td>
+
+</table>
+
+
 
 ## Reproduction of Paper Figures
 All the figures of the paper using the present algorihtms can be reproduced from the following script `script-figures.sh`.
