@@ -72,7 +72,7 @@ Then after edition you can obtain for instance the representation belwo on right
 The algorithm can be used to zoom on part of photography:
 
 
-`./build/bin/tv-triangulation-color -i Input/ara.ppm -b 16 -D 16 -output resultAra`
+`./build/bin/tv-triangulation-color -i Input/ara.ppm -b 16 -D 16 -o resultAra`
 `convert -scale 1600% Input/ara.ppm ara16x.png`
 
 You should obtain such resulting images:
@@ -80,7 +80,7 @@ You should obtain such resulting images:
 <table>
 <tr>
 <td><img width="30%" src="tests/ex_results/ara16x.png"></td>
-<td><img width="30%" src="tests/ex_results/output-2nd.png"></td>
+<td><img width="30%" src="tests/ex_results/resultAra-2nd.png"></td>
 </tr><tr>
 <td>Source scaled x16 </td>
 <td>Resulting image </td>
