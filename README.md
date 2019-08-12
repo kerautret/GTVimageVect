@@ -59,12 +59,12 @@ Then after edition you can obtain for instance the representation belwo on right
  <tr><td><img  src="tests/ex_results/skeletonSrcScaled.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
 <td>
-<img src="https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnim.svg"></td>
+<a href="http://ker.iutsd.univ-lorraine.fr/skeletonAnim.svg"><img src="https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnim.svg"></a></td>
 </tr>
 <tr>
  <td>source (scaled)</td> 
  <td>result (svg)</td>
- <td> Edited using <a href="https://inkscape.org">inskape</a> and animated from svg format</td>
+ <td> Edited using <a href="https://inkscape.org">inskape</a> and animated from svg format.</td>
 </tr>
  </table>
  
