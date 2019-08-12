@@ -35,6 +35,7 @@ The installation of the code can be done by following these steps:
    - Then, you can start to build the code: (you can remove the DGtal path if you make a global installation of DGtal).
      - `cmake .. -DDGtal_DIR="/fullpath_to_yourParent_DGtal_dir/DGtal/build" -DCMAKE_BUILD_TYPE:string="Release"`
      - `make`
+     - `cd ..`
      
 ## Typical Use
    The algorithm is run from executable `tv-triangulation-color`. For instance, you can use as follows (from the project directory):
