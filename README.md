@@ -56,13 +56,13 @@ The vectorial representation allows you to edit easely the shape by using for in
 
 Then after edition you can obtain for instance the representation belwo on right image:
 <table>
- <tr><td><img  src="tests/ex_results/skeletonSrc.png"/></td>
+ <tr><td><img  src="tests/ex_results/skeletonSrcScaled.png"/></td>
   <td><img  src="tests/ex_results/skeleton.svg"/></td>
 <td>
 <img src="https://github.com/kerautret/GTVimageVect/blob/master/tests/ex_results/skeletonAnime.svg"></td>
 </tr>
 <tr>
- <td>source</td> 
+ <td>source (scaled)</td> 
  <td>result (svg)</td>
  <td> Edited using <a href="https://inkscape.org">inskape</a> and animated from svg format</td>
 </tr>
