@@ -1410,33 +1410,33 @@
     .bras-sabre{
         animation-name: sabreScale;
         animation-duration: 1s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
 
     }
     .bouclier{
         animation-name: bouclierMove;
         animation-duration: 1s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
 
 
     }
     .tete{
         animation-name: teteScale;
         animation-duration: 1.1s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
 
     }
     .allOther{
         animation-name: smallOtherScale;
         animation-duration: 0.8s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
 
     }
 
     .cuisse{
         animation-name: cuisseRotate;
         animation-duration: 1.1s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
         transform-origin: 50% 50%;
 
 
@@ -1444,20 +1444,20 @@
     .tibia{
         animation-name: teteScale;
         animation-duration: 1.1s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
 
     }
     .jambe{
         animation-name: jambeRotate;
         animation-duration: 1.1s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
         transform-origin: 50% 50%;
 
     }
     .pied {
         animation-name: piedMove;
         animation-duration: 1.2s;
-        animation-iteration-count: infinite;
+        animation-iteration-count: 10;
      
         }
      @keyframes bouclierMove {
