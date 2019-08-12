@@ -79,8 +79,8 @@ You should obtain such resulting images:
 
 <table>
 <tr>
-<td><img width="30%" src="tests/ex_results/ara16x.png"></td>
-<td><img width="30%" src="tests/ex_results/resultAra-2nd.png"></td>
+<td><img width="400" src="tests/ex_results/ara16x.png"></td>
+<td><img width="400" src="tests/ex_results/resultAra-2nd.png"></td>
 </tr><tr>
 <td>Source scaled x16 </td>
 <td>Resulting image </td>
