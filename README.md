@@ -1,7 +1,7 @@
 # GTVimageVect
 Source code of "Geometric Total Variation for Image Vectorization, Zooming and Pixel Art Depixelizing" authored by  Bertrand Kerautret and Jacques-Oliver Lachaud (2019)
 
-You can also access to [IPOL](http://www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=77777000076)
+You can also access to [IPOL](http://www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=280)
 
 Build status:
  - Linux/MacOS [![Build Status](https://travis-ci.org/kerautret/GTVimageVect.svg?branch=master)](https://travis-ci.org/kerautret/GTVimageVect)
