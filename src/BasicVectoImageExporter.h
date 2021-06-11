@@ -39,6 +39,12 @@ public:
         return myHeight - y;
     }
 
+    int mod(int value, int m) {
+        int res = value % m;
+        
+        return res < 0 ? res + m : res;
+    }
+
     template<typename TContour2D>
     void addPathContent(const TContour2D &contour) {
         if (contour.size() == 0) {
@@ -51,16 +57,44 @@ public:
             }
             myOutputStream << contour[0][0] << " " << contour[0][1] << " lineto" << std::endl;
         } else if (myExportType == SvgExport) {
-            if (contour.size() >= 4) {
-                myOutputStream << "M " << contour[0][0] << " " << reverseYCoord(contour[0][1]);
-
-                for (int i = 1; i < contour.size(); i += 2) {
-                    myOutputStream << " Q " << contour[i % contour.size()][0] << " "
-                                   << reverseYCoord(contour[i % contour.size()][1])
-                                   << ", " << contour[(i + 1) % contour.size()][0] << " "
-                                   << reverseYCoord(contour[(i + 1) % contour.size()][1]);
+            if (contour.size() >= 3) {
+                // Array of points for the path
+                std::vector<std::pair<double, double>> points;
+                // Compute all tangents
+                int size = contour.size();
+                int scale = 4;
+                for (int i = 0; i < size; i++)
+                {
+                    // Get points
+                    double point[2] = {contour[mod(i, size)][0], contour[mod(i, size)][1]};
+                    double pointBefore[2] = {contour[mod(i-1, size)][0], contour[mod(i-1, size)][1]};
+                    double pointAfter[2] = {contour[mod(i+1, size)][0], contour[mod(i+1, size)][1]};
+                    // Compute tangent vector
+                    double vector[2] = {(pointAfter[0] - pointBefore[0]), (pointAfter[1] - pointBefore[1])};
+                    vector[0] /= scale;
+                    vector[1] /= scale;
+                    // Compute control points
+                    double controlBefore[2] = {(point[0] - vector[0]), (point[1] - vector[1])};
+                    double controlAfter[2] = {(point[0] + vector[0]), (point[1] + vector[1])};
+                    // Add points to vector
+                    points.push_back(std::make_pair(controlBefore[0], reverseYCoord(controlBefore[1])));
+                    points.push_back(std::make_pair(point[0], reverseYCoord(point[1])));
+                    points.push_back(std::make_pair(controlAfter[0], reverseYCoord(controlAfter[1])));
                 }
+                
 
+                // Move to first point
+                myOutputStream << "M " << points[1].first << " " << points[1].second;
+                // Create path
+                size = points.size();
+                for (int i = 2; i < size; i += 3)
+                {
+                    // Bezier curve order 3
+                    myOutputStream << " C " << points[mod(i, size)].first << " " << points[mod(i, size)].second
+                                << ", " << points[mod(i+1, size)].first << " " << points[mod(i+1, size)].second
+                                << ", " << points[mod(i+2, size)].first << " " << points[mod(i+2, size)].second;
+                }
+                // Close path
                 myOutputStream << " Z";
             } else {
                 myOutputStream << "M ";
