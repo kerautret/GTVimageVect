@@ -58,41 +58,83 @@ public:
         }
         if (myExportType == EpsExport)
         {
-            myOutputStream << contour[0][0] << " " << contour[0][1] << " moveto" << std::endl;
+            myOutputStream << contour[0].first[0] << " " << contour[0].first[1] << " moveto" << std::endl;
             for (unsigned int i = 1; i < contour.size(); i++)
             {
-                myOutputStream << contour[i][0] << " " << contour[i][1] << " lineto" << std::endl;
+                myOutputStream << contour[i].first[0] << " " << contour[i].first[1] << " lineto" << std::endl;
             }
-            myOutputStream << contour[0][0] << " " << contour[0][1] << " lineto" << std::endl;
+            myOutputStream << contour[0].first[0] << " " << contour[0].first[1] << " lineto" << std::endl;
         }
         else if (myExportType == SvgExport)
         {
             if (contour.size() >= 3)
             {
-                // Array of points for the path
-                std::vector<std::pair<double, double>> points;
-                // Compute all tangents
+                typedef enum
+                {
+                    LINE,
+                    CURVE,
+                } DrawType;
+                std::vector<std::pair<DrawType, std::vector<std::pair<double, double>>>> paths;
+
                 int size = contour.size();
-                int scale = 4;
+                double scale = .25;
                 for (int i = 0; i < size; i++)
                 {
-                    // Get points
-                    double point[2] = {contour[mod(i, size)][0], contour[mod(i, size)][1]};
-                    double pointBefore[2] = {contour[mod(i - 1, size)][0], contour[mod(i - 1, size)][1]};
-                    double pointAfter[2] = {contour[mod(i + 1, size)][0], contour[mod(i + 1, size)][1]};
-                    // Compute tangent vector
-                    double vector[2] = {(pointAfter[0] - pointBefore[0]), (pointAfter[1] - pointBefore[1])};
-                    vector[0] /= scale;
-                    vector[1] /= scale;
-                    // Compute control points
-                    double controlBefore[2] = {(point[0] - vector[0]), (point[1] - vector[1])};
-                    double controlAfter[2] = {(point[0] + vector[0]), (point[1] + vector[1])};
-                    // Add points to vector
-                    points.push_back(std::make_pair(controlBefore[0], reverseYCoord(controlBefore[1])));
-                    points.push_back(std::make_pair(point[0], reverseYCoord(point[1])));
-                    points.push_back(std::make_pair(controlAfter[0], reverseYCoord(controlAfter[1])));
+                    bool isLine = contour[i].second || contour[mod(i + 1, size)].second;
+                    std::vector<std::pair<double, double>> path;
+                    double pointA[2] = {contour[mod(i, size)].first[0], contour[mod(i, size)].first[1]};
+                    double pointB[2] = {contour[mod(i + 1, size)].first[0], contour[mod(i + 1, size)].first[1]};
+                    if (isLine)
+                    {
+                        path.push_back(std::make_pair(contour[mod(i + 1, size)].first[0], reverseYCoord(contour[mod(i + 1, size)].first[1])));
+
+                        paths.push_back(std::make_pair(LINE, path));
+                    }
+                    else
+                    {
+                        // Compute first control point
+                        double pointBefore[2] = {contour[mod(i - 1, size)].first[0], contour[mod(i - 1, size)].first[1]};
+                        double vector1[2] = {(pointB[0] - pointBefore[0]), (pointB[1] - pointBefore[1])};
+                        vector1[0] *= scale;
+                        vector1[1] *= scale;
+                        double firstControl[2] = {(pointA[0] + vector1[0]), (pointA[1] + vector1[1])};
+
+                        // Compute second controle point
+                        double pointAfter[2] = {contour[mod(i + 2, size)].first[0], contour[mod(i + 2, size)].first[1]};
+                        double vector2[2] = {(pointAfter[0] - pointA[0]), (pointAfter[1] - pointA[1])};
+                        vector2[0] *= scale;
+                        vector2[1] *= scale;
+                        double secondControl[2] = {(pointB[0] - vector2[0]), (pointB[1] - vector2[1])};
+
+                        path.push_back(std::make_pair(firstControl[0], reverseYCoord(firstControl[1])));
+                        path.push_back(std::make_pair(secondControl[0], reverseYCoord(secondControl[1])));
+                        path.push_back(std::make_pair(pointB[0], reverseYCoord(pointB[1])));
+
+                        paths.push_back(std::make_pair(CURVE, path));
+                    }
                 }
 
+                // TODO : draw paths
+                myOutputStream << "M " << contour[0].first[0] << " " << reverseYCoord(contour[0].first[1]);
+                for (auto const &path : paths)
+                {
+                    switch (path.first)
+                    {
+                    default:
+                    case LINE:
+                        myOutputStream << " L " << path.second[0].first << " " << path.second[0].second;
+                        break;
+
+                    case CURVE:
+                        myOutputStream << " C " << path.second[0].first << " " << path.second[0].second;
+                        myOutputStream << ", " << path.second[1].first << " " << path.second[1].second;
+                        myOutputStream << ", " << path.second[2].first << " " << path.second[2].second;
+                        break;
+                    }
+                }
+                myOutputStream << " Z";
+
+                /*
                 // Move to first point
                 myOutputStream << "M " << points[1].first << " " << points[1].second;
                 // Create path
@@ -105,17 +147,17 @@ public:
                                    << ", " << points[mod(i + 2, size)].first << " " << points[mod(i + 2, size)].second;
                 }
                 // Close path
-                myOutputStream << " Z";
+                myOutputStream << " Z";*/
             }
             else
             {
                 myOutputStream << "M ";
-                myOutputStream << contour[0][0] << "," << reverseYCoord(contour[0][1]) << " ";
+                myOutputStream << contour[0].first[0] << "," << reverseYCoord(contour[0].first[1]) << " ";
                 for (unsigned int i = 1; i < contour.size(); i++)
                 {
-                    myOutputStream << contour[i][0] << "," << reverseYCoord(contour[i][1]) << " ";
+                    myOutputStream << contour[i].first[0] << "," << reverseYCoord(contour[i].first[1]) << " ";
                 }
-                myOutputStream << contour[0][0] << "," << reverseYCoord(contour[0][1]) << " z ";
+                myOutputStream << contour[0].first[0] << "," << reverseYCoord(contour[0].first[1]) << " z ";
             }
         }
     };
@@ -219,7 +261,7 @@ public:
     }
 
     // Used (@todo tp add SVG case)
-    template <typename TContour>
+    template <typename TContour> // std::vector<std::pair<DGtal::TVTriangulation::RealPoint, bool>>
     void addRegions(const std::vector<TContour> &contours, const DGtal::Color &color)
     {
         if (myExportType == EpsExport)
@@ -244,7 +286,7 @@ public:
             myOutputStream << "grestore" << std::endl;
             myOutputStream << "stroke" << std::endl;
 
-            if (myDisplayMesh)
+            /* if (myDisplayMesh) // TODO : uncomment
             {
                 myOutputStream << "grestore" << std::endl;
                 myOutputStream << LINE_COLOR << " setrgbcolor" << std::endl;
@@ -255,7 +297,7 @@ public:
                 {
                     addContourPoints(cnt);
                 }
-            }
+            }*/
         }
         else if (myExportType == SvgExport)
         {
@@ -283,13 +325,13 @@ public:
             myOutputStream << "inkscape:connector-curvature=\"0\" ",
                 myOutputStream << "sodipodi:nodetypes=\"cccccccccc\" />\n";
             myCurrentIdPath++;
-            if (myDisplayMesh)
+            /*if (myDisplayMesh) // TODO : uncomment
             {
                 for (auto const &cnt : contours)
                 {
                     addContourPoints(cnt);
                 }
-            }
+            }*/
         }
     };
 

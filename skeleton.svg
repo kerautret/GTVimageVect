@@ -52,7 +52,7 @@ inkscape:window-maximized="0"
 inkscape:current-layer="svg3" />
 <path 
  style="fill:#5a636d; fill-opacity:1,fill-rule:evenodd;stroke:#5a636d;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-d="M 0 0 C 11 -14.25, 33 -14.25, 44 0 C 55 14.25, 55 42.75, 44 57 C 33 71.25, 11 71.25, 0 57 C -11 42.75, -11 14.25, 0 0 Z"
+d="M 0 0 L 44 0 L 44 57 L 0 57 L 0 0 Z"
 id="path1" 
 inkscape:connector-curvature="0" sodipodi:nodetypes="cccccccccc" />
 <path 

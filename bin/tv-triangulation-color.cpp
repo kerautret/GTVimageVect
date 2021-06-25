@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <map>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -205,7 +206,7 @@ namespace DGtal
     typedef double Scalar;
     typedef PointVector<3, Scalar> Value;
     typedef std::pair<DGtal::Color,
-                      std::vector<std::vector<RealPoint>>>
+                      std::vector<std::vector<std::pair<RealPoint, bool>>>>
         ColorContours;
 
     // typedef std::array< Value, 2 >     VectorValue;
@@ -2998,11 +2999,11 @@ namespace DGtal
     for (TVTriangulation::Face f = 0; f < tvT.T.nbFaces(); f++)
     {
       TVTriangulation::VertexRange V = tvT.T.verticesAroundFace(f);
-      std::vector<TVTriangulation::RealPoint> tr;
-      tr.push_back(tvT.T.position(V[0]));
-      tr.push_back(tvT.T.position(V[1]));
-      tr.push_back(tvT.T.position(V[2]));
-      tr.push_back(tvT.T.position(V[0]));
+      std::vector<std::pair<TVTriangulation::RealPoint, bool>> tr;
+      tr.push_back(std::make_pair(tvT.T.position(V[0]), false));
+      tr.push_back(std::make_pair(tvT.T.position(V[1]), false));
+      tr.push_back(std::make_pair(tvT.T.position(V[2]), false));
+      tr.push_back(std::make_pair(tvT.T.position(V[0]), false));
       TVTriangulation::Value valMedian;
       TVTriangulation::Value valMean = tvT.u(V[0]) + tvT.u(V[1]) + tvT.u(V[2]);
       valMean /= 3.0;
@@ -3049,13 +3050,13 @@ namespace DGtal
     return tvT.T.opposite(a);
   }
 
-  std::vector<TVTriangulation::RealPoint>
+  std::vector<std::pair<TVTriangulation::RealPoint, bool>>
   trackBorderFromFace(TVTriangulation &tvT,
                       TVTriangulation::Face startArc,
                       TVTriangulation::Value valInside,
                       std::vector<bool> &markedArcs)
   {
-    std::vector<TVTriangulation::RealPoint> res;
+    std::vector<std::pair<TVTriangulation::RealPoint, bool>> res;
 
     // starting ext point: arc tail
     TVTriangulation::Face faceIni = tvT.T.faceAroundArc(startArc);
@@ -3068,7 +3069,7 @@ namespace DGtal
     {
       TVTriangulation::VertexRange V = tvT.T.verticesAroundFace(currentFace);
       TVTriangulation::RealPoint center = tvT.barycenter(currentFace); //(tvT.T.position(V[0])+tvT.T.position(V[1])+tvT.T.position(V[2]))/3.0;
-      res.push_back(center);
+      res.push_back(std::make_pair(center, false));
       currentArc = pivotNext(tvT, currentArc, valInside);
       currentFace = tvT.T.faceAroundArc(currentArc);
       if (currentFace == TVTriangulation::Triangulation::INVALID_FACE)
@@ -3080,12 +3081,12 @@ namespace DGtal
     return res;
   }
 
-  std::vector<std::vector<TVTriangulation::RealPoint>>
+  std::vector<std::vector<std::pair<TVTriangulation::RealPoint, bool>>>
   trackBorders(TVTriangulation &tvT, unsigned int num)
   {
     typedef std::map<DGtal::Color, std::vector<unsigned int>> MapColorContours;
     MapColorContours mapContours;
-    std::vector<std::vector<TVTriangulation::RealPoint>> resAll;
+    std::vector<std::vector<std::pair<TVTriangulation::RealPoint, bool>>> resAll;
     std::vector<bool> markedArcs(tvT.T.nbArcs());
     for (unsigned int i = 0; i < markedArcs.size(); i++)
     {
@@ -3121,7 +3122,7 @@ namespace DGtal
     auto itMap = mapContours.begin();
     for (unsigned int i = 0; i < num; i++)
       itMap++;
-    std::vector<std::vector<TVTriangulation::RealPoint>> res;
+    std::vector<std::vector<std::pair<TVTriangulation::RealPoint, bool>>> res;
     for (unsigned int i = 0; i < (itMap->second).size(); i++)
     {
       res.push_back(resAll[(itMap->second)[i]]);
@@ -3158,12 +3159,12 @@ namespace DGtal
     return DGtal::Color(valMed[0], valMed[1], valMed[2]);
   }
 
-  std::vector<TVTriangulation::ColorContours> trackAllBorders(TVTriangulation &tvT, unsigned int width, unsigned int height)
+  std::vector<TVTriangulation::ColorContours> trackAllBorders(TVTriangulation &tvT, unsigned int width, unsigned int height) // TODO
   {
     typedef std::map<DGtal::Color, std::vector<unsigned int>> MapColorContours;
     std::vector<TVTriangulation::ColorContours> res;
     MapColorContours mapContours;
-    std::vector<std::vector<TVTriangulation::RealPoint>> resAll;
+    std::vector<std::vector<std::pair<TVTriangulation::RealPoint, bool>>> resAll;
     std::vector<bool> markedArcs(tvT.T.nbArcs());
     for (unsigned int i = 0; i < markedArcs.size(); i++)
     {
@@ -3174,11 +3175,11 @@ namespace DGtal
     // Adding background:
     TVTriangulation::ColorContours c;
     c.first = med;
-    std::vector<std::vector<TVTriangulation::RealPoint>>
-        bg = {{TVTriangulation::RealPoint(0, height),
-               TVTriangulation::RealPoint(width, height),
-               TVTriangulation::RealPoint(width, 0),
-               TVTriangulation::RealPoint(0, 0)}};
+    std::vector<std::vector<std::pair<TVTriangulation::RealPoint, bool>>>
+        bg = {{std::make_pair(TVTriangulation::RealPoint(0, height), true),
+               std::make_pair(TVTriangulation::RealPoint(width, height), true),
+               std::make_pair(TVTriangulation::RealPoint(width, 0), true),
+               std::make_pair(TVTriangulation::RealPoint(0, 0), true)}};
     c.second = bg;
     res.push_back(c);
 
@@ -3224,18 +3225,18 @@ namespace DGtal
   }
 
   void exportVectMeshDual(TVTriangulation &tvT, const std::string &name, unsigned int width,
-                          unsigned int height, bool displayMesh, unsigned int numColor, double scale) // TODO
+                          unsigned int height, bool displayMesh, unsigned int numColor, double scale)
   {
     BasicVectoImageExporter exp(name, width, height, displayMesh, scale);
     for (TVTriangulation::VertexIndex v = 0; v < tvT.T.nbVertices(); v++)
     {
-      std::vector<TVTriangulation::RealPoint> tr;
+      std::vector<std::pair<TVTriangulation::RealPoint, bool>> tr;
       auto outArcs = tvT.T.outArcs(v);
       for (auto rit = outArcs.rbegin(), ritEnd = outArcs.rend();
            rit != ritEnd; ++rit)
       {
         auto a = *rit;
-        tr.push_back(tvT.contourPoint(a));
+        tr.push_back(std::make_pair(tvT.contourPoint(a), false));
         if (tvT.T.isArcBoundary(a))
         {
           trace.warning() << "Boundary arc" << std::endl;
@@ -3243,19 +3244,9 @@ namespace DGtal
         else
         {
           auto f = tvT.T.faceAroundArc(a);
-          tr.push_back(tvT.barycenter(f));
+          tr.push_back(std::make_pair(tvT.barycenter(f), false));
         }
       }
-      // TVTriangulation::FaceRange F = tvT.T.facesAroundVertex( v );
-      // for(auto f: F)
-      // {
-      //   TVTriangulation::Point center = tvT.barycenter( f );
-
-      //   // TVTriangulation::VertexRange V = tvT.T.verticesAroundFace( f );
-      //   // TVTriangulation::Point center = tvT.T.position(V[0])+tvT.T.position(V[1])+tvT.T.position(V[2]);
-      //   // center /= 3.0;
-      //   tr.push_back(center);
-      // }
       TVTriangulation::Value val = tvT.u(v);
       exp.addRegion(tr, DGtal::Color(val[0], val[1], val[2]), 0.001);
     }
@@ -3264,26 +3255,26 @@ namespace DGtal
       for (TVTriangulation::Face f = 0; f < tvT.T.nbFaces(); f++)
       {
         TVTriangulation::VertexRange V = tvT.T.verticesAroundFace(f);
-        std::vector<TVTriangulation::RealPoint> tr;
-        tr.push_back(tvT.T.position(V[0]));
-        tr.push_back(tvT.T.position(V[1]));
-        tr.push_back(tvT.T.position(V[2]));
-        tr.push_back(tvT.T.position(V[0]));
+        std::vector<std::pair<TVTriangulation::RealPoint, bool>> tr;
+        tr.push_back(std::make_pair(tvT.T.position(V[0]), false));
+        tr.push_back(std::make_pair(tvT.T.position(V[1]), false));
+        tr.push_back(std::make_pair(tvT.T.position(V[2]), false));
+        tr.push_back(std::make_pair(tvT.T.position(V[0]), false));
 
         exp.addContour(tr, DGtal::Color(0, 200, 200), 0.01);
       }
-      std::vector<std::vector<TVTriangulation::RealPoint>> contour = trackBorders(tvT, numColor);
+      std::vector<std::vector<std::pair<TVTriangulation::RealPoint, bool>>> contour = trackBorders(tvT, numColor);
       for (auto c : contour)
       {
         DGtal::Color col;
-        if (ContourHelper::isCounterClockWise(c))
+        /*if (ContourHelper::isCounterClockWise(c))
         {
           col = DGtal::Color(200, 20, 200);
         }
         else
-        {
-          col = DGtal::Color(200, 200, 20);
-        }
+        {*/
+        col = DGtal::Color(200, 200, 20);
+        //}
         exp.addContour(c, col, 0.1);
       }
     }
