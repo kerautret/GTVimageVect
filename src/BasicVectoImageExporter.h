@@ -133,21 +133,6 @@ public:
                     }
                 }
                 myOutputStream << " Z";
-
-                /*
-                // Move to first point
-                myOutputStream << "M " << points[1].first << " " << points[1].second;
-                // Create path
-                size = points.size();
-                for (int i = 2; i < size; i += 3)
-                {
-                    // Bezier curve order 3
-                    myOutputStream << " C " << points[mod(i, size)].first << " " << points[mod(i, size)].second
-                                   << ", " << points[mod(i + 1, size)].first << " " << points[mod(i + 1, size)].second
-                                   << ", " << points[mod(i + 2, size)].first << " " << points[mod(i + 2, size)].second;
-                }
-                // Close path
-                myOutputStream << " Z";*/
             }
             else
             {
