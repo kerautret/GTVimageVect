@@ -2,6 +2,13 @@
 
 # Versions
 
+## Version 0.1.2
+
+Made by Kevin Traini
+
+Add bezier curve for svg export.
+Triple points are fixed and use lines instead curves
+
 
 ## Version 0.1.1
 
