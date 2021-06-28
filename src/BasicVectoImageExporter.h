@@ -74,14 +74,19 @@ public:
                     LINE,
                     CURVE,
                 } DrawType;
-                std::vector<std::pair<DrawType, std::vector<std::pair<double, double>>>> paths;
+                typedef std::pair<double, double> Point;
+                typedef std::pair<DrawType, std::vector<Point>> Path;
+                
+                std::vector<Path> paths;
 
                 int size = contour.size();
                 double scale = .25;
                 for (int i = 0; i < size; i++)
                 {
+                    // If the point is on a triple point
                     bool isLine = contour[i].second || contour[mod(i + 1, size)].second;
-                    std::vector<std::pair<double, double>> path;
+
+                    std::vector<Point> path;
                     double pointA[2] = {contour[mod(i, size)].first[0], contour[mod(i, size)].first[1]};
                     double pointB[2] = {contour[mod(i + 1, size)].first[0], contour[mod(i + 1, size)].first[1]};
                     if (isLine)
