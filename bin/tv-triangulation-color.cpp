@@ -3054,7 +3054,7 @@ namespace DGtal
   trackBorderFromFace(TVTriangulation &tvT,
                       TVTriangulation::Face startArc,
                       TVTriangulation::Value valInside,
-                      std::vector<bool> &markedArcs)
+                      std::vector<bool> &markedArcs) // TODO
   {
     std::vector<std::pair<TVTriangulation::RealPoint, bool>> res;
 
@@ -3069,7 +3069,14 @@ namespace DGtal
     {
       TVTriangulation::VertexRange V = tvT.T.verticesAroundFace(currentFace);
       TVTriangulation::RealPoint center = tvT.barycenter(currentFace); //(tvT.T.position(V[0])+tvT.T.position(V[1])+tvT.T.position(V[2]))/3.0;
-      res.push_back(std::make_pair(center, false));
+
+      // Get the colors around the face
+      TVTriangulation::Value a = tvT.u(V[0]);
+      TVTriangulation::Value b = tvT.u(V[1]);
+      TVTriangulation::Value c = tvT.u(V[2]);
+      // The point is fixed (is line) if the 3 colors are differents
+      res.push_back(std::make_pair(center, a != b && b != c && a != c));
+
       currentArc = pivotNext(tvT, currentArc, valInside);
       currentFace = tvT.T.faceAroundArc(currentArc);
       if (currentFace == TVTriangulation::Triangulation::INVALID_FACE)
@@ -3159,7 +3166,7 @@ namespace DGtal
     return DGtal::Color(valMed[0], valMed[1], valMed[2]);
   }
 
-  std::vector<TVTriangulation::ColorContours> trackAllBorders(TVTriangulation &tvT, unsigned int width, unsigned int height) // TODO
+  std::vector<TVTriangulation::ColorContours> trackAllBorders(TVTriangulation &tvT, unsigned int width, unsigned int height)
   {
     typedef std::map<DGtal::Color, std::vector<unsigned int>> MapColorContours;
     std::vector<TVTriangulation::ColorContours> res;
@@ -3193,6 +3200,7 @@ namespace DGtal
         TVTriangulation::Value valH = tvT.u(tvT.T.head(a));
         TVTriangulation::Value valT = tvT.u(tvT.T.tail(a));
 
+        // Si on est pas passé sur l'arc et que les 2 points sont différents et que ce n'est pas un arc frontière et que le point en tête est valide
         found = !markedArcs[a] && (valH[0] != valT[0] || valH[1] != valT[1] || valH[2] != valT[2]) && !tvT.T.isArcBoundary(a) && !tvT.isinvalid(tvT.T.head(a));
         if (found)
         {

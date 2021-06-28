@@ -114,7 +114,6 @@ public:
                     }
                 }
 
-                // TODO : draw paths
                 myOutputStream << "M " << contour[0].first[0] << " " << reverseYCoord(contour[0].first[1]);
                 for (auto const &path : paths)
                 {
