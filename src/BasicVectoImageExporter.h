@@ -10,8 +10,8 @@ class BasicVectoImageExporter
 {
     std::string LINE_COLOR;          // = " 0.8 0.1 0.1 ";
     std::string POINT_COLOR;         // = " 0.1 0.1 0.8 ";
-    const float emptyCntWidth = 0.1; // used in % (larger for better inskape rendering)
-    const float meshCntWidth = 0.1;
+    const float emptyCntWidth = 0; // used in % (larger for better inskape rendering)
+    const float meshCntWidth = 0;
 
     typedef enum
     {
