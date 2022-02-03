@@ -16,9 +16,9 @@ To use this source code, you need to install the following dependencies:
      For instance on linux you can install the following package: sudo apt-get install `libboost-dev libboost-system-dev libboost-program-options-dev`(the `libboost-program-options-dev` is not mandatory for DGtal but is used by our project)
      - `git clone git@github.com:DGtal-team/DGtal.git`
      - `cd DGtal; mkdir build; cd build`
-     - `cmake .. -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE:string="Release";`
+     - `cmake .. -DCMAKE_POLICY_DEFAULT_CMP0057=NEW -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE:string="Release";` 
      - `make;` eventually:  `make install`.
-
+     Note that the option -DCMAKE_POLICY_DEFAULT_CMP0057=NEW is needed in some situation to fix boost search error due to cmake langage policy change.
      For any problem, don't hesitate to contact the DGtal team on the [GitHub repository](https://github.com/DGtal-team/DGtal).
      On windows or more details see instructions [here](https://dgtal-team.github.io/doc-nightly/moduleBuildDGtal.html).
    - **cairo**
