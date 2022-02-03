@@ -1,9 +1,10 @@
-# This is the CMake script for compiling a CGAL application.
-
+# This is the CMake script for compiling a GTVimageVect project.
 project( GTVimageVect ) 
 
 
 cmake_minimum_required (VERSION 2.6) 
+cmake_policy(SET CMP0057 NEW) # the new interpretation of IN_LIST is by default not set (at least until  3.21.1) else findiing boost dependancie fails.
+
 include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 macro(use_cxx11)
