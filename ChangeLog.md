@@ -2,6 +2,8 @@
 
 # Versions
 
+## Version 0.1.2
+   - Fix cmake policy (IN_LIST)
 
 ## Version 0.1.1
 
