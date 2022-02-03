@@ -3,8 +3,13 @@
 # Versions
 
 ## Version 0.1.2
-   - Fix cmake policy (IN_LIST)
+- Add bezier curve for svg export.
+ Triple points are fixed and use lines instead curves
+ (Kevin Traini PR [#5](https://github.com/kerautret/GTVimageVect/pull/5))
 
+- Fix cmake policy (IN_LIST)
+ (Kevin Traini PR [#6](https://github.com/kerautret/GTVimageVect/pull/6))
+  
 ## Version 0.1.1
 
    - Improved display vectorial format with borde contours (display thick
