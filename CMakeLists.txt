@@ -2,7 +2,7 @@
 project( GTVimageVect ) 
 
 
-cmake_minimum_required (VERSION 2.6) 
+cmake_minimum_required (VERSION 3.22) 
 cmake_policy(SET CMP0057 NEW) # the new interpretation of IN_LIST is by default not set (at least until  3.21.1) else findiing boost dependancie fails.
 
 include_directories ("${PROJECT_SOURCE_DIR}/src")
@@ -18,6 +18,11 @@ macro(use_cxx11)
 endmacro(use_cxx11)
 
 use_cxx11()
+
+
+# CLI11
+include_directories( "${PROJECT_SOURCE_DIR}/ext/" )
+
 
 
 # -----------------------------------------------------------------------------
