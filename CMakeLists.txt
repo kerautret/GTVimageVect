@@ -2,7 +2,7 @@
 project( GTVimageVect ) 
 
 
-cmake_minimum_required (VERSION 2.6) 
+cmake_minimum_required (VERSION 3.1) 
 cmake_policy(SET CMP0057 NEW) # the new interpretation of IN_LIST is by default not set (at least until  3.21.1) else findiing boost dependancie fails.
 
 include_directories ("${PROJECT_SOURCE_DIR}/src")
@@ -18,6 +18,11 @@ macro(use_cxx11)
 endmacro(use_cxx11)
 
 use_cxx11()
+
+
+# CLI11
+include_directories( "${PROJECT_SOURCE_DIR}/ext/" )
+
 
 
 # -----------------------------------------------------------------------------
@@ -76,21 +81,6 @@ ELSE(CAIRO_FOUND)
 ENDIF(CAIRO_FOUND)
 
 
-
-SET(Boost_USE_STATIC_LIBS   ON)
-SET(Boost_USE_MULTITHREADED ON)
-SET(Boost_USE_STATIC_RUNTIME OFF)
-SET(Boost_FOUND FALSE)
-FIND_PACKAGE(Boost 1.46.0 REQUIRED COMPONENTS program_options)
-if ( Boost_FOUND )
-  ADD_DEFINITIONS(${BOOST_DEFINITIONS} -DBOOST_ALL_NO_LIB)
-  message(STATUS "Boost and boost_program_options found.")
-  include_directories( ${Boost_INCLUDE_DIRS} )
-  SET(GTVDep ${GTVDep} 
-     ${Boost_LIBRAIRIES}  
-     ${Boost_PROGRAM_OPTIONS_LIBRARY} Boost::program_options)
-   SET(GTVLinInc ${Boost_INCLUDE_DIRS})
-endif( Boost_FOUND )
 
 SET(SRC_COMP
  ${PROJECT_SOURCE_DIR}/src/BasicVectoImageExporter.cpp  
