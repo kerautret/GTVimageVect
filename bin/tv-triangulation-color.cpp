@@ -37,6 +37,9 @@
 #include "FourierPoisson.h"
 #include "cairo.h"
 
+#include "CLI11.hpp"
+
+
 static const std::string version = "0.1.1";
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3307,78 +3310,152 @@ namespace DGtal
 
 } // namespace DGtal
 
-///////////////////////////////////////////////////////////////////////////////
-namespace po = boost::program_options;
-///////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char **argv)
 {
-  using namespace DGtal;
+  // parse command line using CLI ----------------------------------------------
+  CLI::App app;
+//  std::string inputFileName;
+//  std::string outputFileName {"result.raw"};
+//  DGtal::int64_t rescaleInputMin {0};
+//  DGtal::int64_t rescaleInputMax {255};
+//
+//
+  double dt {0.248};
+  double lambda {0.0};
+  double tol {0.01};
+  int N  {20}; //= vm["tv-max-iter"].as<int>();
+  int quant  {256}; //= vm["quantify"].as<int>();
+  std::string img_fname;
+  std::string bname {"after-tv-opt"};
 
-  // parse command line ----------------------------------------------
-  po::options_description general_opt("Allowed options are: ");
-  general_opt.add_options()("help,h", "display this message")
-    ("input,i", po::value<std::string>(), "Specifies the input shape as a 2D image PPM filename.")
-    ("output,o", po::value<std::string>()->default_value("after-tv-opt"), "Specifies the basename of output displayed images. See option -D, file name is completed by -g, -lg, -pu, -2nd, -2nd-with-slices depending on display choice.")
-    ("limit,L", po::value<int>()->default_value(200), "Gives the maximum number of passes (default is 200).")
-    ("bitmap,b", po::value<double>()->default_value(2.0), "Rasterization magnification factor [arg] for PNG export.")
-    ("strategy,s", po::value<int>()->default_value(4), "Strategy for quadrilatera with equal energy: 0: do nothing, 1: subdivide, 2: flip all, 3: flip all when #flipped normal = 0, 4: flip approximately half when #flipped normal = 0, 5: flip approximately half when #flipped normal = 0, subdivide if everything fails.")
-    ("tv-power,p", po::value<double>()->default_value(0.5), "The power coefficient used to compute the gradient ie |Grad I|^{2p}. ")
-    ("lambda,l", po::value<double>()->default_value(0.0), "The data fidelity term in TV denoising (if lambda <= 0, then the data fidelity is exact")
-    ("dt", po::value<double>()->default_value(0.248), "The time step in TV denoising (should be lower than 0.25)")
-    ("tolerance,t", po::value<double>()->default_value(0.01), "The tolerance to stop the TV denoising.")
-    ("quantify,q", po::value<int>()->default_value(256), "The quantification for colors (number of levels, q=2 means binary.")
-    ("tv-max-iter,N", po::value<int>()->default_value(20), "The maximum number of iteration in TV's algorithm.")
-    ("nb-alt-iter,A", po::value<int>()->default_value(1), "The number of iteration for alternating TV and TV-flip.")
-    ("display-tv,d", po::value<int>()->default_value(0), "Tells the display mode after standard TV regularization per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles.")
-    ("display-flip,D", po::value<int>()->default_value(4), "Tells the display mode aftergeometric TV flips per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles (quite nice and flat), 0x8: output partition of unity Bezier triangles (slow and not good), 0x10: output 2nd order reconstruction with Bezier curve (nicest but slower than 0x4), 0x20: same as 0x8 but displays also the similarity/discontinuity graph (for debug/illustrations), 0x40: use Poisson reconstruction to reconstruct linear gradient with discontinuities.")
-    ("discontinuities,S", po::value<double>()->default_value(0.1), "Tells to display a % of the TV discontinuities (the triangles with greatest energy).")
-    ("stiffness", po::value<double>()->default_value(0.9), "Tells how to stiff the gradient around discontinuities (amplitude value is changed at stiffness * middle).")
-    ("amplitude", po::value<double>()->default_value(1.0), "Tells the amplitude of the stiffness for the gradient around discontinuities.")
-    ("similarity", po::value<double>()->default_value(0.0), "Tells when two colors are considered identical for connectedness.")
-    ("connectivity", po::value<std::string>()->default_value("Order"), "Indicates the strategy for determining the connectivity of ambiguous pixels: Size | Order. Size is best for 1-bit images, Order is best for color images.")
-    ("debug", "specifies the DEBUG mode: output some intermediate results in cc.ppm and order.ppm.")
-    ("displayMesh", "display mesh of the vectorial display.")
-    ("exportVectMesh,e", po::value<std::vector<std::string>>()->multitoken(), "Export the triangle mesh.")
-    ("exportVectMeshDual,E", po::value<std::vector<std::string>>()->multitoken(), "Export the triangle mesh.")
-    ("exportVectContoursDual,C", po::value<std::vector<std::string>>()->multitoken(), "Export the image regions filled. Use 3rd bezier curves for the edges")
-    ("vectScale", po::value<double>(), "Change the default vectorial scale to ajust default display size. By default the scale is given from the Rasterization magnification factor (--bitmap,b option) (using 10 will display easely small images while 1.0 is more adapted to bigger images).")
-    ("numColorExportVectDual", po::value<unsigned int>()->default_value(0), "num of the color of the map.")
-    ("regularizeContour,R", po::value<int>()->default_value(20), "regularizes the dual contours for <nb> iterations.")
-    ("zip,z", po::value<double>()->default_value(1.0), "Compresses the triangulation to keep only the given proportion of vertices.")
-    ("zip-method,Z", po::value<std::string>()->default_value("Laplacian"), "zip method in Laplacian | Merge.")("version", "Display the version number.")
+  double p {0.5};
+  double sim {0.0};
+  std::string conn {"Order"};
+  bool debug {false};
+
+  
+  int display {0};//   = vm["display-tv"].as<int>();
+  double b {2.0};
+  double st  {0.9}; //= vm["stiffness"].as<double>();
+
+  
+  double disc {0.1};
+  double am {1.0};
+  int miter {200};
+  int strat {4};
+  int nbAlt {1};
+  double vectScale;
+  
+  int displayFlip {4};
+  std::vector<std::string> vectMeshName;
+  std::vector<std::string> vectMeshDualName;
+  std::vector<std::string> vectContoursDualName;
+  int numColorExportVectDual {0};
+  int nbItRegContour {20};
+  bool versionDispl {false};
+  bool displayMesh {false};
+  double zip {1.0};
+  std::string z_method {"Laplacian"};
+
+  using namespace DGtal;
+  app.description("Generate the best piecewise linear TV from a color image. It works by simply flipping edges of"
+                  "some initial triangulation to optimize the given energy."
+                  "Basic usage: \n \ttv-triangulation-color [options] -i <image.ppm> -b 4");
+  app.add_option("-i,--input,1", img_fname, "Specifies the input shape as a 2D image PPM filename.")
+      ->required()
+      ->check(CLI::ExistingFile);
+  app.add_option("--output,-o", bname, "Specifies the basename of output displayed images. See option -D, file name is completed by -g, -lg, -pu, -2nd, -2nd-with-slices depending on display choice.", true);
+
+  app.add_option("--lambda,-l", lambda, "The data fidelity term in TV denoising (if lambda <= 0, then the data fidelity is exact.", true);
+  app.add_option("--dt", dt, "The time step in TV denoising (should be lower than 0.25).", true);
+  app.add_option("--tolerance,-t", tol, "The tolerance to stop the TV denoising.", true);
+  app.add_option("--tv-max-iter,-N", N, "The maximum number of iteration in TV's algorithm.", true);
+  app.add_option("--quantify", quant, "The quantification for colors (number of levels, q=2 means binary.", true);
+
+  app.add_option("--tv-power,-p", p, "The power coefficient used to compute the gradient ie |Grad I|^{2p}. ", true);
+  app.add_option("--similarity", sim, "Tells when two colors are considered identical for connectedness.", true);
+  app.add_option("--connectivity",conn,  "Indicates the strategy for determining the connectivity of ambiguous pixels: Size | Order. Size is best for 1-bit images, Order is best for color images.", true);
+  app.add_flag("--debug", debug, "specifies the DEBUG mode: output some intermediate results in cc.ppm and order.ppm.");
+  app.add_option("--display-tv,-d",display, "Tells the display mode after standard TV regularization per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles.", true);
+  app.add_option("--bitmap,-b", b, "Rasterization magnification factor [arg] for PNG export.", true);
+  app.add_option("--stiffness",st, "Tells how to stiff the gradient around discontinuities (amplitude value is changed at stiffness * middle).", true);
+  app.add_option("--discontinuities,-S",disc,  "Tells to display a % of the TV discontinuities (the triangles with greatest energy).", true);
+  app.add_option("--amplitude", am,"Tells the amplitude of the stiffness for the gradient around discontinuities.", true);
+  app.add_option("--limit,-L",miter, "Gives the maximum number of passes (default is 200).", true );
+  app.add_option("--strategy,-s", strat, "Strategy for quadrilatera with equal energy: 0: do nothing, 1: subdivide, 2: flip all, 3: flip all when #flipped normal = 0, 4: flip approximately half when #flipped normal = 0, 5: flip approximately half when #flipped normal = 0, subdivide if everything fails.", true);
+  app.add_option("--nb-alt-iter,-A",nbAlt, "The number of iteration for alternating TV and TV-flip.", true);
+  auto vectScaleOpt = app.add_option("vectScale", vectScale, "Change the default vectorial scale to ajust default display size. By default the scale is given from the Rasterization magnification factor (--bitmap,b option) (using 10 will display easely small images while 1.0 is more adapted to bigger images)." );
+  app.add_option("--display-flip,-D",displayFlip,"Tells the display mode aftergeometric TV flips per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles (quite nice and flat), 0x8: output partition of unity Bezier triangles (slow and not good), 0x10: output 2nd order reconstruction with Bezier curve (nicest but slower than 0x4), 0x20: same as 0x8 but displays also the similarity/discontinuity graph (for debug/illustrations), 0x40: use Poisson reconstruction to reconstruct linear gradient with discontinuities.", true);
+  app.add_option("--exportVectMesh,-e", vectMeshName,"Export the triangle mesh.", true );
+  app.add_option("--exportVectMeshDual,-E", vectMeshDualName,"Export the triangle mesh.", true );
+  app.add_option("--exportVectContoursDual,-C", vectContoursDualName,"Export the image regions filled. Use 3rd bezier curves for the edges.", true );
+  app.add_option("--numColorExportVectDual", numColorExportVectDual, "num of the color of the map.", true );
+
+  app.add_flag("--displayMesh", displayMesh, "display mesh of the vectorial display.");
+  app.add_option("--regularizeContour,-R", nbItRegContour,"regularizes the dual contours for <nb> iterations.", true );
+  app.add_option("--zip,-z", zip, "Compresses the triangulation to keep only the given proportion of vertices.", true);
+  app.add_option("--zip-method,-Z",z_method, "zip method in Laplacian | Merge.", true);
+  app.add_flag("--version", versionDispl, "Display the version number.");
+
+  
+  
+  app.get_formatter()->column_width(40);
+  CLI11_PARSE(app, argc, argv);
+  // END parse command line using CLI ----------------------------------------------
+
+  
+  
+  
+// //
+//  // parse command line ----------------------------------------------
+//  po::options_description general_opt("Allowed options are: ");
+//  general_opt.add_options()("help,h", "display this message")
+//    ("output,o", po::value<std::string>()->default_value("after-tv-opt"), "Specifies the basename of output displayed images. See option -D, file name is completed by -g, -lg, -pu, -2nd, -2nd-with-slices depending on display choice.")
+//    ("limit,L", po::value<int>()->default_value(200), "Gives the maximum number of passes (default is 200).")
+//    ("bitmap,b", po::value<double>()->default_value(2.0), "Rasterization magnification factor [arg] for PNG export.")
+//    ("strategy,s", po::value<int>()->default_value(4), "Strategy for quadrilatera with equal energy: 0: do nothing, 1: subdivide, 2: flip all, 3: flip all when #flipped normal = 0, 4: flip approximately half when #flipped normal = 0, 5: flip approximately half when #flipped normal = 0, subdivide if everything fails.")
+//    ("tv-power,p", po::value<double>()->default_value(0.5), "The power coefficient used to compute the gradient ie |Grad I|^{2p}. ")
+//    ("lambda,l", po::value<double>()->default_value(0.0), "The data fidelity term in TV denoising (if lambda <= 0, then the data fidelity is exact")
+//    ("dt", po::value<double>()->default_value(0.248), "The time step in TV denoising (should be lower than 0.25)")
+//    ("tolerance,t", po::value<double>()->default_value(0.01), "The tolerance to stop the TV denoising.")
+//    ("quantify,q", po::value<int>()->default_value(256), "The quantification for colors (number of levels, q=2 means binary.")
+//    ("tv-max-iter,N", po::value<int>()->default_value(20), "The maximum number of iteration in TV's algorithm.")
+//    ("nb-alt-iter,A", po::value<int>()->default_value(1), "The number of iteration for alternating TV and TV-flip.")
+//    ("display-tv,d", po::value<int>()->default_value(0), "Tells the display mode after standard TV regularization per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles.")
+//    ("display-flip,D", po::value<int>()->default_value(4), "Tells the display mode aftergeometric TV flips per bit: 0x1 : output Flat colored triangles, 0x2 : output Gouraud colored triangles, 0x4: output Linear Gradient triangles (quite nice and flat), 0x8: output partition of unity Bezier triangles (slow and not good), 0x10: output 2nd order reconstruction with Bezier curve (nicest but slower than 0x4), 0x20: same as 0x8 but displays also the similarity/discontinuity graph (for debug/illustrations), 0x40: use Poisson reconstruction to reconstruct linear gradient with discontinuities.")
+//    ("discontinuities,S", po::value<double>()->default_value(0.1), "Tells to display a % of the TV discontinuities (the triangles with greatest energy).")
+    
+//    ("amplitude", po::value<double>()->default_value(1.0), "Tells the amplitude of the stiffness for the gradient around discontinuities.")
+//    ("similarity", po::value<double>()->default_value(0.0), "Tells when two colors are considered identical for connectedness.")
+//    ("connectivity", po::value<std::string>()->default_value("Order"), "Indicates the strategy for determining the connectivity of ambiguous pixels: Size | Order. Size is best for 1-bit images, Order is best for color images.")
+    //("debug", "specifies the DEBUG mode: output some intermediate results in cc.ppm and order.ppm.")
+//    ("displayMesh", "display mesh of the vectorial display.")
+//    ("exportVectMesh,e", po::value<std::vector<std::string>>()->multitoken(), "Export the triangle mesh.")
+//    ("exportVectMeshDual,E", po::value<std::vector<std::string>>()->multitoken(), "Export the triangle mesh.")
+//    ("exportVectContoursDual,C", po::value<std::vector<std::string>>()->multitoken(), "Export the image regions filled. Use 3rd bezier curves for the edges")
+//    ("vectScale", po::value<double>(), "Change the default vectorial scale to ajust default display size. By default the scale is given from the Rasterization magnification factor (--bitmap,b option) (using 10 will display easely small images while 1.0 is more adapted to bigger images).")
+//    ("numColorExportVectDual", po::value<unsigned int>()->default_value(0), "num of the color of the map.")
+//    ("regularizeContour,R", po::value<int>()->default_value(20), "regularizes the dual contours for <nb> iterations.")
+//    ("zip,z", po::value<double>()->default_value(1.0), "Compresses the triangulation to keep only the given proportion of vertices.")
+//    ("zip-method,Z", po::value<std::string>()->default_value("Laplacian"), "zip method in Laplacian | Merge.")("version", "Display the version number.")
       // ("nb-zip-geometry,Z", po::value<int>()->default_value( 100 ), "Maximum number of iterations to optimize the TV geometry of the zipped triangulation." )
       ;
+ 
+  
 
-  bool parseOK = true;
-  po::variables_map vm;
-  try
-  {
-    po::store(po::parse_command_line(argc, argv, general_opt), vm);
-  }
-  catch (const std::exception &ex)
-  {
-    parseOK = false;
-    trace.info() << "Error checking program options: " << ex.what() << std::endl;
-  }
-
-  po::notify(vm);
-  if (!parseOK || vm.count("help") || argc <= 1 || (!vm.count("input")))
-  {
-    trace.info() << "Generate the best piecewise linear TV from a color image. It works by simply flipping edges of some initial triangulation to optimize the given energy." << std::endl
-                 << "Basic usage: " << std::endl
-                 << "\ttv-triangulation-color [options] -i <image.ppm> -b 4" << std::endl
-                 << general_opt << "\n";
-    return 0;
-  }
-
-  if (vm.count("version"))
+  if (versionDispl)
   {
     std::cout << "--------------------------------------------" << std::endl;
     std::cout << "Using " << argv[0] << " version " << version << std::endl;
     std::cout << "--------------------------------------------" << std::endl;
   }
-
+  
+ 
+  
+  
+  
+  
   // Useful types
   using namespace std;
   using namespace DGtal;
@@ -3389,7 +3466,7 @@ int main(int argc, char **argv)
   typedef ImageSelector<Z2i::Domain, Color>::Type ColorImage;
   Clock c;
   trace.beginBlock("Loading image");
-  std::string img_fname = vm["input"].as<std::string>();
+
   Image image = GenericReader<Image>::import(img_fname);
   std::string extension = img_fname.substr(img_fname.find_last_of(".") + 1);
   bool color = false;
@@ -3402,11 +3479,6 @@ int main(int argc, char **argv)
   trace.info() << std::fixed;
   trace.endBlock();
 
-  double lambda = vm["lambda"].as<double>();
-  double dt = vm["dt"].as<double>();
-  double tol = vm["tolerance"].as<double>();
-  int N = vm["tv-max-iter"].as<int>();
-  int quant = vm["quantify"].as<int>();
 
   double timeTV, timeTriangulation, timeDisplayTriangulation,
       timeOptimisationTr, timeRegulContours, timeExport = 0.0;
@@ -3468,19 +3540,17 @@ int main(int argc, char **argv)
   timeTV = c.stopClock();
   c.startClock();
   trace.beginBlock("Construction of the triangulation");
-  double p = vm["tv-power"].as<double>();
-  double sim = vm["similarity"].as<double>();
-  string conn = vm["connectivity"].as<string>();
-  bool debug = vm.count("debug");
+ 
+ 
   int conn_s = conn == "Size" ? 0 : 1;
   TVTriangulation TVT(image, color, p, sim, conn_s, debug);
   trace.info() << TVT.T << std::endl;
   trace.endBlock();
   // by default we take the scale of the scale factor of the zoom image.
-  double scaleVisuVect = vm["bitmap"].as<double>();
-  if (vm.count("vectScale"))
+  double scaleVisuVect = b;
+  if (vectScaleOpt->count() > 0)
   {
-    scaleVisuVect = vm["vectScale"].as<double>();
+    scaleVisuVect = vectScale;
   }
   trace.beginBlock("Output TV image (possibly quantified)");
   Image J(image.domain());
@@ -3502,11 +3572,7 @@ int main(int argc, char **argv)
   c.startClock();
   trace.beginBlock("Displaying triangulation");
   {
-    int display = vm["display-tv"].as<int>();
-    double b = vm["bitmap"].as<double>();
-    double disc = vm["discontinuities"].as<double>();
-    double st = vm["stiffness"].as<double>();
-    double am = vm["amplitude"].as<double>();
+   
     double x0 = 0.0;
     double y0 = 0.0;
     double x1 = (double)image.domain().upperBound()[0];
@@ -3518,9 +3584,8 @@ int main(int argc, char **argv)
   timeDisplayTriangulation = c.stopClock();
   c.startClock();
   trace.beginBlock("Optimizing the triangulation");
-  int miter = vm["limit"].as<int>();
-  int strat = vm["strategy"].as<int>();
-  int nbAlt = vm["nb-alt-iter"].as<int>();
+ 
+
   if (quant != 256 && nbAlt != 1)
   {
     nbAlt = 1;
@@ -3580,8 +3645,7 @@ int main(int argc, char **argv)
 
   trace.beginBlock("regularizing contours");
   {
-    int N = vm["regularizeContour"].as<int>();
-    TVT.regularizeContours(0.001, N);
+    TVT.regularizeContours(0.001, nbItRegContour);
   }
   trace.endBlock();
   timeRegulContours = c.stopClock();
@@ -3589,19 +3653,14 @@ int main(int argc, char **argv)
 
   trace.beginBlock("Displaying triangulation");
   {
-    int display = vm["display-flip"].as<int>();
-    double b = vm["bitmap"].as<double>();
-    double disc = vm["discontinuities"].as<double>();
-    double st = vm["stiffness"].as<double>();
-    double am = vm["amplitude"].as<double>();
+   
     double x0 = 0.0;
     double y0 = 0.0;
     double x1 = (double)image.domain().upperBound()[0];
     double y1 = (double)image.domain().upperBound()[1];
-    std::string bname = vm["output"].as<std::string>();
 
     viewTVTriangulationAll(TVT, b, x0, y0, x1, y1, color, bname,
-                           display, disc, st, am);
+                           displayFlip, disc, st, am);
     // if ( ( display & 64 ) == 64 ) {
     //   typedef ImageContainerBySTLVector< Domain, Color > ColorImage;
     //   typedef ColorImage::Point Point;
@@ -3620,11 +3679,11 @@ int main(int argc, char **argv)
   }
   trace.endBlock();
   timeDisplayTriangulation = c.stopClock();
-  std::string z_method = vm["zip-method"].as<std::string>();
+
   if (z_method == "Merge")
   {
     trace.beginBlock("Compressing triangulation");
-    double zip = vm["zip"].as<double>();
+
     if (zip < 1.0)
     {
       TVTriangulation TVTzip(image.domain(), TVT._u, TVT.T,
@@ -3636,7 +3695,6 @@ int main(int argc, char **argv)
       trace.info() << "TV( u ) = " << TVTzip.getEnergyTV() << std::endl;
       int iter = 0;
       int last = 1;
-      int miter = vm["limit"].as<int>();
       // int miter = vm[ "nb-zip-geometry" ].as<int>();
       while (true)
       {
@@ -3649,18 +3707,14 @@ int main(int argc, char **argv)
         last = nbs.first;
       }
 
-      int display = vm["display-flip"].as<int>();
-      double b = vm["bitmap"].as<double>();
-      double disc = vm["discontinuities"].as<double>();
-      double st = vm["stiffness"].as<double>();
-      double am = vm["amplitude"].as<double>();
+     
       double x0 = 0.0;
       double y0 = 0.0;
       double x1 = (double)image.domain().upperBound()[0];
       double y1 = (double)image.domain().upperBound()[1];
       std::string bname = "zip";
       viewTVTriangulationAll(TVTzip, b, x0, y0, x1, y1, color, bname,
-                             display, disc, st, am);
+                             displayFlip, disc, st, am);
       unsigned int w = image.extent()[0];
       unsigned int h = image.extent()[1];
       std::string pname = "zip-primal.eps";
@@ -3729,31 +3783,30 @@ int main(int argc, char **argv)
 
   trace.beginBlock("Export base triangulation");
 
-  if (vm.count("exportVectMesh"))
+  if (vectMeshName.size() != 0)
   {
     unsigned int w = image.extent()[0];
     unsigned int h = image.extent()[1];
-    for (auto name : vm["exportVectMesh"].as<std::vector<string>>())
+    for (auto name : vectMeshName)
     {
-      exportVectMesh(TVT, name, w, h, vm.count("displayMesh"), scaleVisuVect);
+      exportVectMesh(TVT, name, w, h, displayMesh, scaleVisuVect);
     }
   }
-  if (vm.count("exportVectMeshDual"))
+  if (vectMeshDualName.size() != 0)
   {
     unsigned int w = image.extent()[0];
     unsigned int h = image.extent()[1];
-    for (auto name : vm["exportVectMeshDual"].as<std::vector<std::string>>())
+    for (auto name : vectMeshDualName)
     {
-      unsigned int numColor = vm["numColorExportVectDual"].as<unsigned int>();
-      exportVectMeshDual(TVT, name, w, h, vm.count("displayMesh"), numColor, scaleVisuVect);
+      unsigned int numColor = numColorExportVectDual;
+      exportVectMeshDual(TVT, name, w, h, displayMesh, numColor, scaleVisuVect);
     }
   }
-  if (vm.count("exportVectContoursDual"))
+  if (vectContoursDualName.size() != 0)
   {
     unsigned int w = image.extent()[0];
     unsigned int h = image.extent()[1];
-    auto lname = vm["exportVectContoursDual"].as<std::vector<std::string>>();
-    exportVectContoursDual(TVT, lname, w, h, scaleVisuVect);
+    exportVectContoursDual(TVT, vectContoursDualName, w, h, scaleVisuVect);
   }
   trace.endBlock();
   timeExport = c.stopClock();
