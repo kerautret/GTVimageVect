@@ -82,21 +82,6 @@ ENDIF(CAIRO_FOUND)
 
 
 
-SET(Boost_USE_STATIC_LIBS   ON)
-SET(Boost_USE_MULTITHREADED ON)
-SET(Boost_USE_STATIC_RUNTIME OFF)
-SET(Boost_FOUND FALSE)
-FIND_PACKAGE(Boost 1.46.0 REQUIRED COMPONENTS program_options)
-if ( Boost_FOUND )
-  ADD_DEFINITIONS(${BOOST_DEFINITIONS} -DBOOST_ALL_NO_LIB)
-  message(STATUS "Boost and boost_program_options found.")
-  include_directories( ${Boost_INCLUDE_DIRS} )
-  SET(GTVDep ${GTVDep} 
-     ${Boost_LIBRAIRIES}  
-     ${Boost_PROGRAM_OPTIONS_LIBRARY} Boost::program_options)
-   SET(GTVLinInc ${Boost_INCLUDE_DIRS})
-endif( Boost_FOUND )
-
 SET(SRC_COMP
  ${PROJECT_SOURCE_DIR}/src/BasicVectoImageExporter.cpp  
 )
