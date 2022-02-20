@@ -4,7 +4,7 @@ Source code of "Geometric Total Variation for Image Vectorization, Zooming and P
 You can also access to [IPOL](http://www.ipol.im) online demonstration [here](https://ipolcore.ipol.im/demo/clientApp/demo.html?id=280)
 
 Build status:
- - Linux/MacOS [![Build Status](https://travis-ci.org/kerautret/GTVimageVect.svg?branch=master)](https://travis-ci.org/kerautret/GTVimageVect)
+ - Linux/MacOS [![CI (linux/macOS)](https://github.com/kerautret/GTVimageVect/actions/workflows/buildAndDocumentation.yml/badge.svg?branch=master)](https://github.com/kerautret/GTVimageVect/actions/workflows/buildAndDocumentation.yml)
  - Windows [![Build status](https://ci.appveyor.com/api/projects/status/i1crefqj9j1e3lw2?svg=true)](https://ci.appveyor.com/project/kerautret/gtvimagevect)
 
 ## Installation
