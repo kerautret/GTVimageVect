@@ -2,13 +2,17 @@
 
 # Versions
 
-## Version 0.1.2
-- Add bezier curve for svg export.
- Triple points are fixed and use lines instead curves
- (Kevin Traini PR [#5](https://github.com/kerautret/GTVimageVect/pull/5))
+## Version 0.1.3
+  - Replace boost program option with CLI11.
+    (Bertrand Kerautret [#9](https://github.com/kerautret/GTVimageVect/pull/9)
 
-- Fix cmake policy (IN_LIST)
- (Kevin Traini PR [#6](https://github.com/kerautret/GTVimageVect/pull/6))
+## Version 0.1.2
+  - Add bezier curve for svg export.
+    Triple points are fixed and use lines instead curves
+    (Kevin Traini PR [#5](https://github.com/kerautret/GTVimageVect/pull/5))
+
+  - Fix cmake policy (IN_LIST)
+    (Kevin Traini PR [#6](https://github.com/kerautret/GTVimageVect/pull/6))
   
 ## Version 0.1.1
 

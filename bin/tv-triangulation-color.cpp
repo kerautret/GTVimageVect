@@ -40,7 +40,7 @@
 #include "CLI11.hpp"
 
 
-static const std::string version = "0.1.1";
+static const std::string version = "0.1.3";
 
 ///////////////////////////////////////////////////////////////////////////////
 double randomUniform()
